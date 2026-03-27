@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>lobotomy-corp-manager</title>
+</head>
+<body>
+<div id="app">
+    <div id="sidebar">
+        <button onclick="showView('calendar')">Calendar</button>
+        <button onclick="showView('tasks')">Tasks</button>
+        <button onclick="showView('tutorial')">Tutorial</button>
+    </div>
+
+    <div id="main-content">
+        <div id="view-tasks" class="view">
+            <h1 class="glitch" data-text="MENU">MENU</h1>
+            <div id="task-list"></div>
+
+            <div class="add-task-form">
+                <h3>Add new task</h3>
+                <input type="text" id="task-title" placeholder="Title of your task">
+                <input type="date" id="task-date" placeholder="dd.mm.yyyy">
+                <button class="cyan-button" onclick="handleAddTask()">Confirm</button>
+            </div>
+        </div>
+
+        <div id="view-calendar" class="view" style="display:none;">
+            <h1>Monitoring</h1>
+            <div id="calendar-grid">
+            </div>
+        </div>
+
+        <div id="view-tutorial" class="view" style="display:none;">
+            <h1>Briefing</h1>
+            <p>Welcome to the time management system of the control department.</p>
+            <p>1. Add tasks to the list of directives.</p>
+            <p>2. Keep track of deadlines on the monitoring grid.</p>
+            <button class="cyan-button" onclick="finishTutorial()">Clear</button>
+        </div>
+    </div>
+
+    <div id="character-area">
+        <div id="dialog-box">
+            <div id="dialog-name">Angela</div>
+            <div id="dialog-text">Loading...</div>
+        </div>
+        <img id="sprite" src="./src/assets/images/AngelaPortrait-resources.assets-2646.png" alt="Character">
+    </div>
+
+    <div id="tutorial-overlay" style="display:none;">
+        <div class="tutorial-card">
+            <h2 style="color: #f2a300;">ПРОТОКОЛ ОБУЧЕНИЯ: УПРАВЛЯЮЩИЙ</h2>
+            <p>Добро пожаловать в систему мониторинга. Здесь вы будете назначать задачи отделам.</p>
+            <ul>
+                <li>Календарь отображает плотность аномалий (задач).</li>
+                <li>Меню слева позволяет переключать режимы обзора.</li>
+                <li>Анжела будет уведомлять вас о критических изменениях.</li>
+            </ul>
+            <button class="cyan-button" onclick="closeTutorial()">НАЧАТЬ РАБОТУ</button>
+        </div>
+    </div>
+</div>
+<script src="./src/main.js" type="module"></script>
+</body>
+</html>
