@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"lobotomy-corp-manager/backend"
 	"os"
+	"time"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -25,25 +27,19 @@ func (a *App) startup(ctx context.Context) {
 	backend.InitDB()
 }
 
-// // Greet returns a greeting for the given name
-// func (a *App) Greet(name string) string {
-// 	return fmt.Sprintf("Hello %s, It's show time!", name)
-// }
-
 func (a *App) GetTasks() []backend.Task {
 	var tasks []backend.Task
-	backend.DB.Find(&tasks)
-	if tasks == nil {
-		return []backend.Task{}
-	}
+	backend.DB.Order("deadline asc, time asc").Find(&tasks)
 	return tasks
 }
 
-func (a *App) AddTask(title string, desc string, deadline string) string {
+func (a *App) AddTask(title string, desc string, deadline string, taskTime string, repeat string) string {
 	task := backend.Task{
 		Title:       title,
 		Description: desc,
 		Deadline:    deadline,
+		Time:        taskTime,
+		Repeat:      repeat,
 		IsDone:      false,
 	}
 	backend.DB.Create(&task)
@@ -53,8 +49,37 @@ func (a *App) AddTask(title string, desc string, deadline string) string {
 func (a *App) ToggleTask(id uint) {
 	var task backend.Task
 	backend.DB.First(&task, id)
+
 	task.IsDone = !task.IsDone
 	backend.DB.Save(&task)
+
+	if task.IsDone && task.Repeat != "none" {
+		a.createNextRecurringTask(task)
+	}
+}
+
+func (a *App) createNextRecurringTask(t backend.Task) {
+	currentDate, _ := time.Parse("2006-01-02", t.Deadline)
+	var nextDate time.Time
+
+	switch t.Repeat {
+	case "daily":
+		nextDate = currentDate.AddDate(0, 0, 1)
+	case "weekly":
+		nextDate = currentDate.AddDate(0, 0, 7)
+	case "monthly":
+		nextDate = currentDate.AddDate(0, 1, 0)
+	}
+
+	newTask := backend.Task{
+		Title:       t.Title,
+		Description: t.Description,
+		Deadline:    nextDate.Format("2006-01-02"),
+		Time:        t.Time,
+		Repeat:      t.Repeat,
+		IsDone:      false,
+	}
+	backend.DB.Create(&newTask)
 }
 
 func (a *App) DeleteTask(id uint) {
@@ -84,4 +109,35 @@ func (a *App) SetAutoStart(enable bool) error {
 	} else {
 		return k.DeleteValue("LobotomyCalendar")
 	}
+}
+
+func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, startDate string, endDate string, isBiweekly bool) string {
+	start, _ := time.Parse("2006-01-02", startDate)
+	end, _ := time.Parse("2006-01-02", endDate)
+
+	firstOccurrence := start
+	for int(firstOccurrence.Weekday()) != dayOfWeek {
+		firstOccurrence = firstOccurrence.AddDate(0, 0, 1)
+	}
+
+	count := 0
+	step := 7
+	if isBiweekly {
+		step = 14
+	}
+
+	for d := firstOccurrence; !d.After(end); d = d.AddDate(0, 0, step) {
+		if !isBiweekly || (count%2 == 0) {
+			task := backend.Task{
+				Title:    title,
+				Deadline: d.Format("2006-01-02"),
+				Time:     taskTime,
+				IsDone:   false,
+				Repeat:   "none",
+			}
+			backend.DB.Create(&task)
+		}
+		count++
+	}
+	return fmt.Sprintf("Цикл завершен. Создано %d записей.", count)
 }

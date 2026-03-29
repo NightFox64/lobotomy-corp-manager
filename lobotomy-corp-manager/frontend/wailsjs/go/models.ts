@@ -5,7 +5,9 @@ export namespace backend {
 	    title: string;
 	    description: string;
 	    deadline: string;
+	    time: string;
 	    is_done: boolean;
+	    repeat: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Task(source);
@@ -17,7 +19,9 @@ export namespace backend {
 	        this.title = source["title"];
 	        this.description = source["description"];
 	        this.deadline = source["deadline"];
+	        this.time = source["time"];
 	        this.is_done = source["is_done"];
+	        this.repeat = source["repeat"];
 	    }
 	}
 

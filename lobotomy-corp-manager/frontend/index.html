@@ -11,25 +11,41 @@
         <button onclick="showView('calendar')">Calendar</button>
         <button onclick="showView('tasks')">Tasks</button>
         <button onclick="showView('tutorial')">Tutorial</button>
+        <button onclick="showView('schedule')">РАСПИСАНИЕ</button>
     </div>
 
     <div id="main-content">
         <div id="view-tasks" class="view">
             <h1 class="glitch" data-text="MENU">MENU</h1>
+            <button onclick="showToday()" class="alert-btn">СЕГОДНЯ</button>
+            <button onclick="showTomorrow()" class="warn-btn">ЗАВТРА</button>
+
             <div id="task-list"></div>
 
             <div class="add-task-form">
-                <h3>Add new task</h3>
-                <input type="text" id="task-title" placeholder="Title of your task">
-                <input type="date" id="task-date" placeholder="dd.mm.yyyy">
-                <button class="cyan-button" onclick="handleAddTask()">Confirm</button>
+                <input type="text" id="task-title" placeholder="Цель директивы">
+                <input type="date" id="task-date">
+                <input type="time" id="task-time" value="09:00">
+                <select id="task-repeat">
+                    <option value="none">БЕЗ ПОВТОРА</option>
+                    <option value="daily">ЕЖЕДНЕВНО</option>
+                    <option value="weekly">ЕЖЕНЕДЕЛЬНО</option>
+                    <option value="monthly">ЕЖЕМЕСЯЧНО</option>
+                </select>
+                <button onclick="handleAddTask()">ВНЕСТИ</button>
             </div>
         </div>
 
         <div id="view-calendar" class="view" style="display:none;">
-            <h1>Monitoring</h1>
-            <div id="calendar-grid">
+            <div class="calendar-header">
+                <button class="cyan-button" onclick="changeMonth(-1)">&#9664; PREV</button>
+                <h2 id="calendar-month-title">МЕСЯЦ</h2>
+                <button class="cyan-button" onclick="changeMonth(1)">NEXT &#9654;</button>
             </div>
+            <div class="calendar-weekdays">
+                <div>ПН</div><div>ВТ</div><div>СР</div><div>ЧТ</div><div>ПТ</div><div>СБ</div><div>ВС</div>
+            </div>
+            <div id="calendar-grid"></div>
         </div>
 
         <div id="view-tutorial" class="view" style="display:none;">
@@ -39,6 +55,38 @@
             <p>2. Keep track of deadlines on the monitoring grid.</p>
             <button class="cyan-button" onclick="finishTutorial()">Clear</button>
         </div>
+
+        <div id="view-schedule" class="view" style="display:none;">
+            <h1>ПРОТОКОЛ МАССОВОЙ ДИРЕКТИВЫ</h1>
+            <div class="add-task-form">
+                <p>Настройка учебного цикла:</p>
+                <input type="text" id="sched-title" placeholder="Название предмета/пары">
+                <input type="time" id="sched-time" value="09:00">
+
+                <select id="sched-day">
+                    <option value="1">ПОНЕДЕЛЬНИК</option>
+                    <option value="2">ВТОРНИК</option>
+                    <option value="3">СРЕДА</option>
+                    <option value="4">ЧЕТВЕРГ</option>
+                    <option value="5">ПЯТНИЦА</option>
+                    <option value="6">СУББОТА</option>
+                    <option value="0">ВОСКРЕСЕНЬЕ</option>
+                </select>
+
+                <div style="margin-top:10px;">
+                    <label><input type="checkbox" id="sched-biweekly"> ЧЕРЕЗ НЕДЕЛЮ (ЧЕТ/НЕЧЕТ)</label>
+                </div>
+            
+                <div style="margin-top:10px;">
+                    <label>С: </label><input type="date" id="sched-start">
+                    <label> ПО: </label><input type="date" id="sched-end">
+                </div>
+            
+                <button class="cyan-button" style="margin-top:15px;" onclick="handleCreateSchedule()">
+                    ИНИЦИИРОВАТЬ ЦИКЛ
+                </button>
+            </div>
+        </div>
     </div>
 
     <div id="character-area">
@@ -46,7 +94,7 @@
             <div id="dialog-name">Angela</div>
             <div id="dialog-text">Loading...</div>
         </div>
-        <img id="sprite" src="./src/assets/images/AngelaPortrait-resources.assets-2646.png" alt="Character">
+        <img id="sprite" src="./src/assets/images/Angela_Sprite_2.png" alt="Character">
     </div>
 
     <div id="tutorial-overlay" style="display:none;">
@@ -59,6 +107,16 @@
                 <li>Анжела будет уведомлять вас о критических изменениях.</li>
             </ul>
             <button class="cyan-button" onclick="closeTutorial()">НАЧАТЬ РАБОТУ</button>
+        </div>
+    </div>
+
+    <div id="day-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-date-title">ОТЧЕТ ЗА ДЕНЬ</h2>
+                <button onclick="closeModal()">ЗАКРЫТЬ</button>
+            </div>
+            <div id="modal-task-list"></div>
         </div>
     </div>
 </div>

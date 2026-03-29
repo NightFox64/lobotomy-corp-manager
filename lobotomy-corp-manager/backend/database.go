@@ -12,7 +12,9 @@ type Task struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Deadline    string `json:"deadline"`
+	Time        string `json:"time"`
 	IsDone      bool   `json:"is_done"`
+	Repeat      string `json:"repeat"`
 }
 
 type Config struct {

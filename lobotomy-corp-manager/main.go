@@ -12,6 +12,7 @@ import (
 
 var assets embed.FS
 
+//go:embed  icon.ico
 var trayIcon []byte
 
 func main() {
