@@ -110,6 +110,40 @@ body::after {
     border: 1px solid #00f2ff;
 }
 
+@keyframes flash-red {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+.emergency-flash {
+    animation: flash-red 1s infinite;
+    border: 2px solid red !important;
+}
+
+#emergency-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: inset 0 0 0 6px red;
+    animation: emergency-border 1s infinite;
+}
+
+@keyframes emergency-border {
+    0%, 100% { box-shadow: inset 0 0 0 6px rgba(255,0,0,0); }
+    50% { box-shadow: inset 0 0 0 6px rgba(255,0,0,0.9), inset 0 0 60px rgba(255,0,0,0.3); }
+}
+
+#emergency-overlay.active {
+    display: block;
+}
+
+.alarm-text {
+    color: #ff4444 !important;
+    text-shadow: 0 0 10px red;
+}
+
 .tutorial-card {
     border: 2px solid #f2a300;
     padding: 30px;

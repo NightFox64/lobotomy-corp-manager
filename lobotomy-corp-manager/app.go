@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime" // Важно для событий
 	"golang.org/x/sys/windows/registry"
 )
 
@@ -25,6 +26,7 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	backend.InitDB()
+	go a.reminderLoop()
 }
 
 func (a *App) GetTasks() []backend.Task {
@@ -127,17 +129,40 @@ func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, start
 	}
 
 	for d := firstOccurrence; !d.After(end); d = d.AddDate(0, 0, step) {
-		if !isBiweekly || (count%2 == 0) {
-			task := backend.Task{
-				Title:    title,
-				Deadline: d.Format("2006-01-02"),
-				Time:     taskTime,
-				IsDone:   false,
-				Repeat:   "none",
-			}
-			backend.DB.Create(&task)
+		task := backend.Task{
+			Title:    title,
+			Deadline: d.Format("2006-01-02"),
+			Time:     taskTime,
+			IsDone:   false,
+			Repeat:   "none",
 		}
+		backend.DB.Create(&task)
 		count++
 	}
 	return fmt.Sprintf("Цикл завершен. Создано %d записей.", count)
+}
+
+func (a *App) reminderLoop() {
+	ticker := time.NewTicker(30 * time.Second)
+
+	lastNotifiedID := uint(0)
+	lastNotifiedMinute := -1
+
+	for range ticker.C {
+		now := time.Now()
+		dateStr := now.Format("2006-01-02")
+		timeStr := now.Format("15:04")
+
+		var task backend.Task
+		result := backend.DB.Where("deadline = ? AND time = ? AND is_done = ?", dateStr, timeStr, false).First(&task)
+
+		if result.Error == nil {
+			if lastNotifiedID != task.ID || lastNotifiedMinute != now.Minute() {
+				wRuntime.EventsEmit(a.ctx, "alarm-trigger", task)
+
+				lastNotifiedID = task.ID
+				lastNotifiedMinute = now.Minute()
+			}
+		}
+	}
 }

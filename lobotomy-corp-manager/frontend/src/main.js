@@ -1,8 +1,10 @@
 import './style.css';
 import { GetTasks, AddTask, CreateSchedule, ToggleTask, DeleteTask, CheckTutorial, FinishTutorial } from '../wailsjs/go/main/App';
+import { EventsOn, WindowShow } from '../wailsjs/runtime/runtime';
 
 let allTasks = [];
 let currentViewDate = new Date();
+const alarmSound = new Audio('./src/assets/2warning.mp3');
 
 async function init() {
     console.log("Система: Инициализация...");
@@ -141,44 +143,50 @@ window.handleCreateSchedule = async function() {
         return;
     }
 
-    const result = await CreateSchedule(title, time, day, start, end);
+    const isBiweekly = document.getElementById('sched-biweekly').checked;
+    const result = await CreateSchedule(title, time, day, start, end, isBiweekly);
     speak(result + " Расписание синхронизировано.");
     
     loadTasks();
     showView('tasks');
 }
 
+function getLocalDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 window.showToday = function() {
-    const today = new Date().toISOString().split('T')[0];
-    const todayTasks = allTasks.filter(t => t.deadline === today);
+    const todayStr = getLocalDateString(new Date());
     
+    const todayTasks = allTasks.filter(t => t.deadline === todayStr);
     showView('tasks');
-    const list = document.getElementById('task-list');
     
     if (todayTasks.length === 0) {
-        list.innerHTML = '<h1>ДИРЕКТИВ НА СЕГОДНЯ НЕТ</h1>';
-        speak("Управляющий, сегодня не назначено никаких особых работ.");
+        document.getElementById('task-list').innerHTML = '<h1>ДИРЕКТИВ НА СЕГОДНЯ НЕТ</h1>';
+        speak("Управляющий, аномалий на текущий цикл не обнаружено.");
     } else {
         renderSpecificTasks(todayTasks, "ДИРЕКТИВЫ НА СЕГОДНЯ");
-        speak(`На сегодня обнаружено ${todayTasks.length} задач.`);
+        speak(`На сегодня назначено ${todayTasks.length} задач.`);
     }
 }
 
 window.showTomorrow = function() {
     const date = new Date();
     date.setDate(date.getDate() + 1);
-    const tomorrowStr = date.toISOString().split('T')[0];
+    const tomorrowStr = getLocalDateString(date);
     
     const tomorrowTasks = allTasks.filter(t => t.deadline === tomorrowStr);
-    
     showView('tasks');
     
     if (tomorrowTasks.length === 0) {
         document.getElementById('task-list').innerHTML = '<h1>ПЛАНЫ НА ЗАВТРА ОТСУТСТВУЮТ</h1>';
-        speak("На завтрашний цикл не назначено никаких особых протоколов, Управляющий.");
+        speak("Завтрашний день чист. Рекомендую подготовить отчеты.");
     } else {
-        renderSpecificTasks(tomorrowTasks, "ПРОТОКОЛ: ПОДГОТОВКА К ЗАВТРА");
-        speak(`Просматриваю задачи на завтра. Подготовлено ${tomorrowTasks.length} директив.`);
+        renderSpecificTasks(tomorrowTasks, "ПРОТОКОЛ: ЗАВТРА");
+        speak(`На завтра запланировано ${tomorrowTasks.length} задач.`);
     }
 }
 
@@ -217,9 +225,6 @@ window.inspectDay = function(dateStr) {
 
 window.closeModal = () => document.getElementById('day-modal').style.display = 'none';
 
-// В функции renderCalendar() добавь onclick к ячейке:
-// dayBox.setAttribute('onclick', `inspectDay('${dateStr}')`);
-
 window.showView = function(viewId) {
     document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
     document.getElementById('view-' + viewId).style.display = 'block';
@@ -238,4 +243,24 @@ window.closeTutorial = async function() {
     speak("Инструктаж завершен. Удачной работы.");
 }
 
-document.addEventListener('DOMContentLoaded', init);
+EventsOn('alarm-trigger', (task) => {
+    alarmSound.currentTime = 0;
+    alarmSound.play().catch(e => console.error("Звук заблокирован браузером:", e));
+
+    WindowShow();
+
+    speak(`ВНИМАНИЕ! Наступило время выполнения директивы: ${task.title}. Немедленно приступите к работе.`);
+
+    triggerEmergencyEffect();
+});
+
+function triggerEmergencyEffect() {
+    const overlay = document.getElementById('emergency-overlay');
+    overlay.classList.add('active');
+    setTimeout(() => overlay.classList.remove('active'), 5000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('wails:ready', init);
+    if (window.runtime) init();
+});
