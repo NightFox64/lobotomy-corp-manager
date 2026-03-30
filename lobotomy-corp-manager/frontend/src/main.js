@@ -331,22 +331,45 @@ window.closeTutorial = async function() {
     speak("Инструктаж завершен. Удачной работы.");
 }
 
-EventsOn('alarm-trigger', (task) => {
-    const snd = reminderSounds[2];
+let activeReminderSound = null;
+
+function playReminderSound(snd) {
+    bgMusic.pause();
+    if (activeReminderSound && activeReminderSound !== snd) {
+        activeReminderSound.pause();
+        activeReminderSound.currentTime = 0;
+    }
+    activeReminderSound = snd;
     snd.currentTime = 0;
-    snd.play().catch(e => console.error("Звук заблокирован:", e));
+    snd.play().catch(() => {});
+    snd.onended = () => {
+        activeReminderSound = null;
+        bgMusic.play().catch(() => {});
+    };
+}
+
+function stopReminderSound() {
+    if (activeReminderSound) {
+        activeReminderSound.pause();
+        activeReminderSound.currentTime = 0;
+        activeReminderSound.onended = null;
+        activeReminderSound = null;
+        bgMusic.play().catch(() => {});
+    }
+}
+
+document.addEventListener('click', stopReminderSound);
+
+EventsOn('alarm-trigger', (task) => {
+    playReminderSound(reminderSounds[2]);
     WindowShow();
     speak(`ВНИМАНИЕ! Наступило время выполнения директивы: ${task.title}. Немедленно приступите к работе.`);
     triggerEmergencyEffect();
 });
 
 EventsOn('reminder-trigger', (data) => {
-    const idx = data.index; // 1, 2, or 3
-    const snd = reminderSounds[idx];
-    if (snd) {
-        snd.currentTime = 0;
-        snd.play().catch(() => {});
-    }
+    const snd = reminderSounds[data.index];
+    if (snd) playReminderSound(snd);
     speak(`ПРЕДУПРЕЖДЕНИЕ: через ${data.minutes} мин. начнётся выполнение директивы: ${data.title}.`);
 });
 
