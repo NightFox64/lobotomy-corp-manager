@@ -161,6 +161,11 @@ body::after {
     height: 30px;
 }
 
+.task-btn.edit {
+    border-color: #f2a300;
+    color: #f2a300;
+}
+
 .task-btn.delete { 
     border-color: #ff4444; 
     color: #ff4444; 

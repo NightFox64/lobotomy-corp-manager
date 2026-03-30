@@ -33,3 +33,7 @@ export function SetAutoStart(arg1) {
 export function ToggleTask(arg1) {
   return window['go']['main']['App']['ToggleTask'](arg1);
 }
+
+export function UpdateTask(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['UpdateTask'](arg1, arg2, arg3, arg4);
+}

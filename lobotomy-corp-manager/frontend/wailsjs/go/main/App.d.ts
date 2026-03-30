@@ -17,3 +17,5 @@ export function GetTasks():Promise<Array<backend.Task>>;
 export function SetAutoStart(arg1:boolean):Promise<void>;
 
 export function ToggleTask(arg1:number):Promise<void>;
+
+export function UpdateTask(arg1:number,arg2:string,arg3:string,arg4:string):Promise<void>;

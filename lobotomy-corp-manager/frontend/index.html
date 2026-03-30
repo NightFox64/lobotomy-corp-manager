@@ -119,6 +119,24 @@
             <div id="modal-task-list"></div>
         </div>
     </div>
+
+    <div id="edit-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>РЕДАКТИРОВАНИЕ ДИРЕКТИВЫ</h2>
+                <button onclick="closeEditModal()">✖</button>
+            </div>
+            <input type="hidden" id="edit-id">
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                <input type="text" id="edit-title" placeholder="Название">
+                <input type="date" id="edit-date">
+                <input type="time" id="edit-time">
+                <button class="cyan-button" onclick="handleSaveEdit()">СОХРАНИТЬ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="emergency-overlay"></div>
 </div>
 <script src="./src/main.js" type="module"></script>
 </body>

@@ -1,5 +1,5 @@
 import './style.css';
-import { GetTasks, AddTask, CreateSchedule, ToggleTask, DeleteTask, CheckTutorial, FinishTutorial } from '../wailsjs/go/main/App';
+import { GetTasks, AddTask, CreateSchedule, ToggleTask, DeleteTask, UpdateTask, CheckTutorial, FinishTutorial } from '../wailsjs/go/main/App';
 import { EventsOn, WindowShow } from '../wailsjs/runtime/runtime';
 
 let allTasks = [];
@@ -24,34 +24,35 @@ window.loadTasks = async function() {
     try {
         const tasks = await GetTasks();
         allTasks = tasks || [];
-        console.log("Загружено задач:", allTasks.length);
-        
-        renderTaskList();
+        renderTaskList(allTasks);
         renderCalendar();
     } catch (err) {
         console.error("Ошибка загрузки задач:", err);
     }
 }
 
-function renderTaskList() {
-    const list = document.getElementById('task-list');
-    if (!list) return;
-    
-    if (allTasks.length === 0) {
-        list.innerHTML = '<div class="no-tasks">НЕТ АКТИВНЫХ ДИРЕКТИВ</div>';
-        return;
-    }
-
-    list.innerHTML = allTasks.map(t => `
+function taskHTML(t) {
+    return `
         <div class="task-item ${t.is_done ? 'task-done' : ''}">
             <div style="flex-grow: 1;">
                 <span class="task-time">[${t.deadline} | ${t.time}]</span>
                 <div class="task-title">${t.title}</div>
             </div>
             <button class="task-btn done" onclick="handleToggle(${t.id})">✔</button>
+            <button class="task-btn edit" onclick="openEditModal(${t.id})">✎</button>
             <button class="task-btn delete" onclick="handleDelete(${t.id})">✖</button>
         </div>
-    `).join('');
+    `;
+}
+
+function renderTaskList(tasks) {
+    const list = document.getElementById('task-list');
+    if (!list) return;
+    if (!tasks || tasks.length === 0) {
+        list.innerHTML = '<div class="no-tasks">НЕТ АКТИВНЫХ ДИРЕКТИВ</div>';
+        return;
+    }
+    list.innerHTML = tasks.map(taskHTML).join('');
 }
 
 window.handleAddTask = async function() {
@@ -78,6 +79,29 @@ window.handleToggle = async function(id) {
 
 window.handleDelete = async function(id) {
     await DeleteTask(id);
+    loadTasks();
+}
+
+window.openEditModal = function(id) {
+    const task = allTasks.find(t => t.id === id);
+    if (!task) return;
+    document.getElementById('edit-id').value = task.id;
+    document.getElementById('edit-title').value = task.title;
+    document.getElementById('edit-date').value = task.deadline;
+    document.getElementById('edit-time').value = task.time;
+    document.getElementById('edit-modal').style.display = 'flex';
+}
+
+window.closeEditModal = () => document.getElementById('edit-modal').style.display = 'none';
+
+window.handleSaveEdit = async function() {
+    const id = parseInt(document.getElementById('edit-id').value);
+    const title = document.getElementById('edit-title').value;
+    const date = document.getElementById('edit-date').value;
+    const time = document.getElementById('edit-time').value;
+    await UpdateTask(id, title, date, time);
+    closeEditModal();
+    speak("Директива обновлена.");
     loadTasks();
 }
 
@@ -160,15 +184,14 @@ function getLocalDateString(date) {
 
 window.showToday = function() {
     const todayStr = getLocalDateString(new Date());
-    
     const todayTasks = allTasks.filter(t => t.deadline === todayStr);
     showView('tasks');
-    
+    const list = document.getElementById('task-list');
     if (todayTasks.length === 0) {
-        document.getElementById('task-list').innerHTML = '<h1>ДИРЕКТИВ НА СЕГОДНЯ НЕТ</h1>';
+        list.innerHTML = '<h1>ДИРЕКТИВ НА СЕГОДНЯ НЕТ</h1>';
         speak("Управляющий, аномалий на текущий цикл не обнаружено.");
     } else {
-        renderSpecificTasks(todayTasks, "ДИРЕКТИВЫ НА СЕГОДНЯ");
+        list.innerHTML = `<h1>ДИРЕКТИВЫ НА СЕГОДНЯ</h1>` + todayTasks.map(taskHTML).join('');
         speak(`На сегодня назначено ${todayTasks.length} задач.`);
     }
 }
@@ -177,30 +200,16 @@ window.showTomorrow = function() {
     const date = new Date();
     date.setDate(date.getDate() + 1);
     const tomorrowStr = getLocalDateString(date);
-    
     const tomorrowTasks = allTasks.filter(t => t.deadline === tomorrowStr);
     showView('tasks');
-    
+    const list = document.getElementById('task-list');
     if (tomorrowTasks.length === 0) {
-        document.getElementById('task-list').innerHTML = '<h1>ПЛАНЫ НА ЗАВТРА ОТСУТСТВУЮТ</h1>';
+        list.innerHTML = '<h1>ПЛАНЫ НА ЗАВТРА ОТСУТСТВУЮТ</h1>';
         speak("Завтрашний день чист. Рекомендую подготовить отчеты.");
     } else {
-        renderSpecificTasks(tomorrowTasks, "ПРОТОКОЛ: ЗАВТРА");
+        list.innerHTML = `<h1>ПРОТОКОЛ: ЗАВТРА</h1>` + tomorrowTasks.map(taskHTML).join('');
         speak(`На завтра запланировано ${tomorrowTasks.length} задач.`);
     }
-}
-
-function renderSpecificTasks(tasks, titleText) {
-    const list = document.getElementById('task-list');
-    list.innerHTML = `<h1>${titleText}</h1>` + tasks.map(t => `
-        <div class="task-item ${t.is_done ? 'task-done' : ''}">
-            <div style="flex-grow: 1;">
-                <span class="task-time">[${t.time}]</span>
-                <div class="task-title">${t.title}</div>
-            </div>
-            <button class="task-btn done" onclick="handleToggle(${t.id})">✔</button>
-        </div>
-    `).join('');
 }
 
 window.inspectDay = function(dateStr) {
@@ -229,6 +238,7 @@ window.showView = function(viewId) {
     document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
     document.getElementById('view-' + viewId).style.display = 'block';
     if (viewId === 'calendar') renderCalendar();
+    if (viewId === 'tasks') renderTaskList(allTasks);
 }
 
 window.speak = function(text) {
@@ -255,11 +265,9 @@ EventsOn('alarm-trigger', (task) => {
 });
 
 function triggerEmergencyEffect() {
-    const app = document.getElementById('app');
-    app.classList.add('emergency-flash');
-    setTimeout(() => {
-        app.classList.remove('emergency-flash');
-    }, 5000);
+    const overlay = document.getElementById('emergency-overlay');
+    overlay.classList.add('active');
+    setTimeout(() => overlay.classList.remove('active'), 5000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

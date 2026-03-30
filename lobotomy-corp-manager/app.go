@@ -88,6 +88,14 @@ func (a *App) DeleteTask(id uint) {
 	backend.DB.Delete(&backend.Task{}, id)
 }
 
+func (a *App) UpdateTask(id uint, title string, deadline string, taskTime string) {
+	backend.DB.Model(&backend.Task{}).Where("id = ?", id).Updates(map[string]interface{}{
+		"title":    title,
+		"deadline": deadline,
+		"time":     taskTime,
+	})
+}
+
 func (a *App) CheckTutorial() bool {
 	var cfg backend.Config
 	backend.DB.First(&cfg)
@@ -129,16 +137,14 @@ func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, start
 	}
 
 	for d := firstOccurrence; !d.After(end); d = d.AddDate(0, 0, step) {
-		if !isBiweekly || (count%2 == 0) {
-			task := backend.Task{
-				Title:    title,
-				Deadline: d.Format("2006-01-02"),
-				Time:     taskTime,
-				IsDone:   false,
-				Repeat:   "none",
-			}
-			backend.DB.Create(&task)
+		task := backend.Task{
+			Title:    title,
+			Deadline: d.Format("2006-01-02"),
+			Time:     taskTime,
+			IsDone:   false,
+			Repeat:   "none",
 		}
+		backend.DB.Create(&task)
 		count++
 	}
 	return fmt.Sprintf("Цикл завершен. Создано %d записей.", count)
