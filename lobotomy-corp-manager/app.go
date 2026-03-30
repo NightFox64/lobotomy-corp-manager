@@ -129,14 +129,16 @@ func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, start
 	}
 
 	for d := firstOccurrence; !d.After(end); d = d.AddDate(0, 0, step) {
-		task := backend.Task{
-			Title:    title,
-			Deadline: d.Format("2006-01-02"),
-			Time:     taskTime,
-			IsDone:   false,
-			Repeat:   "none",
+		if !isBiweekly || (count%2 == 0) {
+			task := backend.Task{
+				Title:    title,
+				Deadline: d.Format("2006-01-02"),
+				Time:     taskTime,
+				IsDone:   false,
+				Repeat:   "none",
+			}
+			backend.DB.Create(&task)
 		}
-		backend.DB.Create(&task)
 		count++
 	}
 	return fmt.Sprintf("Цикл завершен. Создано %d записей.", count)

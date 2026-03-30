@@ -247,7 +247,7 @@ EventsOn('alarm-trigger', (task) => {
     alarmSound.currentTime = 0;
     alarmSound.play().catch(e => console.error("Звук заблокирован браузером:", e));
 
-    WindowShow();
+    WindowShow(); 
 
     speak(`ВНИМАНИЕ! Наступило время выполнения директивы: ${task.title}. Немедленно приступите к работе.`);
 
@@ -255,9 +255,11 @@ EventsOn('alarm-trigger', (task) => {
 });
 
 function triggerEmergencyEffect() {
-    const overlay = document.getElementById('emergency-overlay');
-    overlay.classList.add('active');
-    setTimeout(() => overlay.classList.remove('active'), 5000);
+    const app = document.getElementById('app');
+    app.classList.add('emergency-flash');
+    setTimeout(() => {
+        app.classList.remove('emergency-flash');
+    }, 5000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
