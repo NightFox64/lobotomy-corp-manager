@@ -104,6 +104,7 @@ window.loadTasks = async function() {
         allTasks = tasks || [];
         renderTaskList(allTasks);
         renderCalendar();
+        checkSpriteState();
     } catch (err) {
         console.error("Ошибка загрузки задач:", err);
     }
@@ -152,7 +153,12 @@ window.handleAddTask = async function() {
 
 window.handleToggle = async function(id) {
     await ToggleTask(id);
-    loadTasks();
+    await loadTasks();
+    const task = allTasks.find(t => t.id === id);
+    if (task && task.is_done) {
+        setSprite('good_work');
+        speak('Ваша эффективность растёт, Управляющий. Продолжайте в том же духе.');
+    }
 }
 
 window.handleDelete = async function(id) {
@@ -317,6 +323,48 @@ window.showView = function(viewId) {
     document.getElementById('view-' + viewId).style.display = 'block';
     if (viewId === 'calendar') renderCalendar();
     if (viewId === 'tasks') renderTaskList(allTasks);
+}
+
+const sprites = {
+    calm:       './src/assets/images/Angela_Sprite_calm.png',
+    good_work:  './src/assets/images/Angela_Sprite_good_work.png',
+    too_many:   './src/assets/images/Angela_Sprite_too_many_tasks.png',
+    yesterday:  './src/assets/images/Angela_Sprite_yesterday_tasks_exist.png',
+};
+
+let spriteResetTimer = null;
+
+function setSprite(key, durationMs = 4000) {
+    document.getElementById('sprite').src = sprites[key];
+    clearTimeout(spriteResetTimer);
+    if (key !== 'calm' && durationMs !== null) {
+        spriteResetTimer = setTimeout(() => {
+            document.getElementById('sprite').src = sprites.calm;
+        }, durationMs);
+    }
+}
+
+function checkSpriteState() {
+    const todayStr = getLocalDateString(new Date());
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = getLocalDateString(yesterday);
+
+    const overdueExists = allTasks.some(t => !t.is_done && t.deadline <= yesterdayStr);
+    if (overdueExists) {
+        setSprite('yesterday', null);
+        speak('Вы допускаете нарушения регламента. Это недопустимо.');
+        return;
+    }
+
+    const todayPending = allTasks.filter(t => !t.is_done && t.deadline === todayStr).length;
+    if (todayPending >= 5) {
+        setSprite('too_many', null);
+        speak('Плотность задач превышает норму. Рекомендую сосредоточиться.');
+        return;
+    }
+
+    setSprite('calm', null);
 }
 
 window.speak = function(text) {
