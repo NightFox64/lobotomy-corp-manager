@@ -20,6 +20,9 @@ type Task struct {
 type Config struct {
 	ID                 uint `gorm:"primaryKey" json:"id"`
 	IsTutorialFinished bool `json:"is_tutorial_finished"`
+	Reminder1Min       int  `json:"reminder1_min"`
+	Reminder2Min       int  `json:"reminder2_min"`
+	Reminder3Min       int  `json:"reminder3_min"`
 }
 
 var DB *gorm.DB

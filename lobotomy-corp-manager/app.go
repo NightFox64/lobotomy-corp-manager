@@ -7,22 +7,18 @@ import (
 	"os"
 	"time"
 
-	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime" // Важно для событий
+	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.org/x/sys/windows/registry"
 )
 
-// App struct
 type App struct {
 	ctx context.Context
 }
 
-// NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	backend.InitDB()
@@ -51,10 +47,8 @@ func (a *App) AddTask(title string, desc string, deadline string, taskTime strin
 func (a *App) ToggleTask(id uint) {
 	var task backend.Task
 	backend.DB.First(&task, id)
-
 	task.IsDone = !task.IsDone
 	backend.DB.Save(&task)
-
 	if task.IsDone && task.Repeat != "none" {
 		a.createNextRecurringTask(task)
 	}
@@ -63,7 +57,6 @@ func (a *App) ToggleTask(id uint) {
 func (a *App) createNextRecurringTask(t backend.Task) {
 	currentDate, _ := time.Parse("2006-01-02", t.Deadline)
 	var nextDate time.Time
-
 	switch t.Repeat {
 	case "daily":
 		nextDate = currentDate.AddDate(0, 0, 1)
@@ -72,7 +65,6 @@ func (a *App) createNextRecurringTask(t backend.Task) {
 	case "monthly":
 		nextDate = currentDate.AddDate(0, 1, 0)
 	}
-
 	newTask := backend.Task{
 		Title:       t.Title,
 		Description: t.Description,
@@ -112,13 +104,11 @@ func (a *App) SetAutoStart(enable bool) error {
 		return err
 	}
 	defer k.Close()
-
 	if enable {
 		execPath, _ := os.Executable()
 		return k.SetStringValue("LobotomyCalendar", execPath)
-	} else {
-		return k.DeleteValue("LobotomyCalendar")
 	}
+	return k.DeleteValue("LobotomyCalendar")
 }
 
 func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, startDate string, endDate string, isBiweekly bool) string {
@@ -135,7 +125,6 @@ func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, start
 	if isBiweekly {
 		step = 14
 	}
-
 	for d := firstOccurrence; !d.After(end); d = d.AddDate(0, 0, step) {
 		task := backend.Task{
 			Title:    title,
@@ -150,26 +139,66 @@ func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, start
 	return fmt.Sprintf("Цикл завершен. Создано %d записей.", count)
 }
 
+func (a *App) GetReminderSettings() backend.Config {
+	var cfg backend.Config
+	backend.DB.First(&cfg)
+	return cfg
+}
+
+func (a *App) SetReminderSettings(r1, r2, r3 int) {
+	backend.DB.Model(&backend.Config{}).Where("id = ?", 1).Updates(map[string]interface{}{
+		"reminder1_min": r1,
+		"reminder2_min": r2,
+		"reminder3_min": r3,
+	})
+}
+
 func (a *App) reminderLoop() {
 	ticker := time.NewTicker(30 * time.Second)
 
 	lastNotifiedID := uint(0)
 	lastNotifiedMinute := -1
+	lastReminderID := [3]uint{0, 0, 0}
 
 	for range ticker.C {
 		now := time.Now()
 		dateStr := now.Format("2006-01-02")
 		timeStr := now.Format("15:04")
 
+		// exact alarm
 		var task backend.Task
 		result := backend.DB.Where("deadline = ? AND time = ? AND is_done = ?", dateStr, timeStr, false).First(&task)
-
 		if result.Error == nil {
 			if lastNotifiedID != task.ID || lastNotifiedMinute != now.Minute() {
 				wRuntime.EventsEmit(a.ctx, "alarm-trigger", task)
-
 				lastNotifiedID = task.ID
 				lastNotifiedMinute = now.Minute()
+			}
+		}
+
+		// advance reminders
+		var cfg backend.Config
+		backend.DB.First(&cfg)
+		offsets := [3]int{cfg.Reminder1Min, cfg.Reminder2Min, cfg.Reminder3Min}
+
+		var upcoming []backend.Task
+		backend.DB.Where("deadline = ? AND is_done = ?", dateStr, false).Find(&upcoming)
+
+		for i, offset := range offsets {
+			if offset <= 0 {
+				continue
+			}
+			targetTime := now.Add(time.Duration(offset) * time.Minute)
+			targetStr := targetTime.Format("15:04")
+			for _, t := range upcoming {
+				if t.Time == targetStr && lastReminderID[i] != t.ID {
+					wRuntime.EventsEmit(a.ctx, "reminder-trigger", map[string]interface{}{
+						"index":   i + 1,
+						"minutes": offset,
+						"title":   t.Title,
+					})
+					lastReminderID[i] = t.ID
+				}
 			}
 		}
 	}

@@ -12,9 +12,13 @@ export function DeleteTask(arg1:number):Promise<void>;
 
 export function FinishTutorial():Promise<void>;
 
+export function GetReminderSettings():Promise<backend.Config>;
+
 export function GetTasks():Promise<Array<backend.Task>>;
 
 export function SetAutoStart(arg1:boolean):Promise<void>;
+
+export function SetReminderSettings(arg1:number,arg2:number,arg3:number):Promise<void>;
 
 export function ToggleTask(arg1:number):Promise<void>;
 

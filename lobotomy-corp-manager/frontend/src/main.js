@@ -1,14 +1,92 @@
 import './style.css';
-import { GetTasks, AddTask, CreateSchedule, ToggleTask, DeleteTask, UpdateTask, CheckTutorial, FinishTutorial } from '../wailsjs/go/main/App';
+import { GetTasks, AddTask, CreateSchedule, ToggleTask, DeleteTask, UpdateTask, CheckTutorial, FinishTutorial, GetReminderSettings, SetReminderSettings } from '../wailsjs/go/main/App';
 import { EventsOn, WindowShow } from '../wailsjs/runtime/runtime';
 
 let allTasks = [];
 let currentViewDate = new Date();
-const alarmSound = new Audio('./src/assets/2warning.mp3');
+
+const bgMusic = new Audio('./src/assets/0warning.mp3');
+bgMusic.loop = true;
+const reminderSounds = [
+    null,
+    new Audio('./src/assets/1warning.mp3'),
+    new Audio('./src/assets/2warning.mp3'),
+    new Audio('./src/assets/3warning.mp3'),
+];
+
+function loadSettings() {
+    return {
+        volumes: JSON.parse(localStorage.getItem('lc_volumes') || '[0.5,0.5,0.5,0.5]'),
+    };
+}
+
+function applyVolumesFromSettings() {
+    const { volumes } = loadSettings();
+    bgMusic.volume = volumes[0];
+    reminderSounds[1].volume = volumes[1];
+    reminderSounds[2].volume = volumes[2];
+    reminderSounds[3].volume = volumes[3];
+}
+
+window.applyVolumes = function() {
+    const vols = [
+        parseFloat(document.getElementById('vol-bg').value),
+        parseFloat(document.getElementById('vol-r1').value),
+        parseFloat(document.getElementById('vol-r2').value),
+        parseFloat(document.getElementById('vol-r3').value),
+    ];
+    localStorage.setItem('lc_volumes', JSON.stringify(vols));
+    bgMusic.volume = vols[0];
+    reminderSounds[1].volume = vols[1];
+    reminderSounds[2].volume = vols[2];
+    reminderSounds[3].volume = vols[3];
+}
+
+window.saveReminderSettings = async function() {
+    const r1 = parseInt(document.getElementById('rem-1').value) || 0;
+    const r2 = parseInt(document.getElementById('rem-2').value) || 0;
+    const r3 = parseInt(document.getElementById('rem-3').value) || 0;
+    await SetReminderSettings(r1, r2, r3);
+    speak('Настройки напоминаний сохранены.');
+    closeSettings();
+}
+
+window.openSettings = async function() {
+    const { volumes } = loadSettings();
+    document.getElementById('vol-bg').value = volumes[0];
+    document.getElementById('vol-r1').value = volumes[1];
+    document.getElementById('vol-r2').value = volumes[2];
+    document.getElementById('vol-r3').value = volumes[3];
+    try {
+        const cfg = await GetReminderSettings();
+        document.getElementById('rem-1').value = cfg.reminder1_min || 0;
+        document.getElementById('rem-2').value = cfg.reminder2_min || 0;
+        document.getElementById('rem-3').value = cfg.reminder3_min || 0;
+    } catch(e) {
+        document.getElementById('rem-1').value = 30;
+        document.getElementById('rem-2').value = 10;
+        document.getElementById('rem-3').value = 5;
+    }
+    switchTab('sound');
+    document.getElementById('settings-modal').style.display = 'flex';
+}
+
+window.closeSettings = function() {
+    document.getElementById('settings-modal').style.display = 'none';
+}
+
+window.switchTab = function(tab) {
+    document.getElementById('tab-sound').style.display = tab === 'sound' ? 'block' : 'none';
+    document.getElementById('tab-remind').style.display = tab === 'remind' ? 'block' : 'none';
+    document.getElementById('tab-sound-btn').classList.toggle('tab-active', tab === 'sound');
+    document.getElementById('tab-remind-btn').classList.toggle('tab-active', tab === 'remind');
+}
 
 async function init() {
     console.log("Система: Инициализация...");
     try {
+        applyVolumesFromSettings();
+        bgMusic.play().catch(() => {});
         await loadTasks();
         const needsTutorial = await CheckTutorial();
         if (needsTutorial) {
@@ -254,14 +332,22 @@ window.closeTutorial = async function() {
 }
 
 EventsOn('alarm-trigger', (task) => {
-    alarmSound.currentTime = 0;
-    alarmSound.play().catch(e => console.error("Звук заблокирован браузером:", e));
-
-    WindowShow(); 
-
+    const snd = reminderSounds[2];
+    snd.currentTime = 0;
+    snd.play().catch(e => console.error("Звук заблокирован:", e));
+    WindowShow();
     speak(`ВНИМАНИЕ! Наступило время выполнения директивы: ${task.title}. Немедленно приступите к работе.`);
-
     triggerEmergencyEffect();
+});
+
+EventsOn('reminder-trigger', (data) => {
+    const idx = data.index; // 1, 2, or 3
+    const snd = reminderSounds[idx];
+    if (snd) {
+        snd.currentTime = 0;
+        snd.play().catch(() => {});
+    }
+    speak(`ПРЕДУПРЕЖДЕНИЕ: через ${data.minutes} мин. начнётся выполнение директивы: ${data.title}.`);
 });
 
 function triggerEmergencyEffect() {

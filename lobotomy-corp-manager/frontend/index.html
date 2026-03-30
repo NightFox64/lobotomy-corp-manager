@@ -137,6 +137,34 @@
     </div>
 
     <div id="emergency-overlay"></div>
+
+    <button id="settings-btn" onclick="openSettings()" title="Настройки">⚙</button>
+
+    <div id="settings-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="width:480px;">
+            <div class="modal-header">
+                <h2>⚙ НАСТРОЙКИ СИСТЕМЫ</h2>
+                <button onclick="closeSettings()">✖</button>
+            </div>
+            <div style="display:flex; gap:0; margin-bottom:15px;">
+                <button id="tab-sound-btn" class="tab-btn tab-active" onclick="switchTab('sound')">ЗВУК</button>
+                <button id="tab-remind-btn" class="tab-btn" onclick="switchTab('remind')">НАПОМИНАНИЯ</button>
+            </div>
+            <div id="tab-sound" class="tab-content">
+                <div class="vol-row"><label>Фоновая музыка</label><input type="range" min="0" max="1" step="0.05" id="vol-bg" oninput="applyVolumes()"></div>
+                <div class="vol-row"><label>Напоминание 1</label><input type="range" min="0" max="1" step="0.05" id="vol-r1" oninput="applyVolumes()"></div>
+                <div class="vol-row"><label>Напоминание 2</label><input type="range" min="0" max="1" step="0.05" id="vol-r2" oninput="applyVolumes()"></div>
+                <div class="vol-row"><label>Напоминание 3</label><input type="range" min="0" max="1" step="0.05" id="vol-r3" oninput="applyVolumes()"></div>
+            </div>
+            <div id="tab-remind" class="tab-content" style="display:none;">
+                <p style="color:#888; font-size:12px; margin-bottom:10px;">Укажите за сколько минут до задачи играть каждое напоминание (0 = отключено)</p>
+                <div class="vol-row"><label>Напоминание 1 (мин)</label><input type="number" min="0" max="1440" id="rem-1" style="width:80px;"></div>
+                <div class="vol-row"><label>Напоминание 2 (мин)</label><input type="number" min="0" max="1440" id="rem-2" style="width:80px;"></div>
+                <div class="vol-row"><label>Напоминание 3 (мин)</label><input type="number" min="0" max="1440" id="rem-3" style="width:80px;"></div>
+                <button class="cyan-button" style="margin-top:15px;" onclick="saveReminderSettings()">СОХРАНИТЬ</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="./src/main.js" type="module"></script>
 </body>

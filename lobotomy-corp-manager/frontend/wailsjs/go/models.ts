@@ -1,5 +1,25 @@
 export namespace backend {
 	
+	export class Config {
+	    id: number;
+	    is_tutorial_finished: boolean;
+	    reminder1_min: number;
+	    reminder2_min: number;
+	    reminder3_min: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Config(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.is_tutorial_finished = source["is_tutorial_finished"];
+	        this.reminder1_min = source["reminder1_min"];
+	        this.reminder2_min = source["reminder2_min"];
+	        this.reminder3_min = source["reminder3_min"];
+	    }
+	}
 	export class Task {
 	    id: number;
 	    title: string;

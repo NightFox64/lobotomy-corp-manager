@@ -22,12 +22,20 @@ export function FinishTutorial() {
   return window['go']['main']['App']['FinishTutorial']();
 }
 
+export function GetReminderSettings() {
+  return window['go']['main']['App']['GetReminderSettings']();
+}
+
 export function GetTasks() {
   return window['go']['main']['App']['GetTasks']();
 }
 
 export function SetAutoStart(arg1) {
   return window['go']['main']['App']['SetAutoStart'](arg1);
+}
+
+export function SetReminderSettings(arg1, arg2, arg3) {
+  return window['go']['main']['App']['SetReminderSettings'](arg1, arg2, arg3);
 }
 
 export function ToggleTask(arg1) {
