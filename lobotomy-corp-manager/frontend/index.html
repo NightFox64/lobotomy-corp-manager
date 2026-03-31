@@ -10,7 +10,6 @@
     <div id="sidebar">
         <button onclick="showView('calendar')">Calendar</button>
         <button onclick="showView('tasks')">Tasks</button>
-        <button onclick="showView('tutorial')">Tutorial</button>
         <button onclick="showView('schedule')">РАСПИСАНИЕ</button>
     </div>
 
@@ -147,6 +146,7 @@
     <div id="emergency-overlay"></div>
 
     <button id="settings-btn" onclick="openSettings()" title="Настройки">⚙</button>
+    <button id="tutorial-btn" onclick="document.getElementById('tutorial-overlay').style.display='flex'" title="Справка">ⓘ</button>
 
     <div id="settings-modal" class="modal" style="display:none;">
         <div class="modal-content" style="width:480px;">
