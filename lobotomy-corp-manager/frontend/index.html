@@ -7,26 +7,13 @@
 </head>
 <body>
 <div id="app">
-    <div id="sidebar">
-        <button onclick="showView('calendar')">Calendar</button>
-        <button onclick="showView('tasks')">Tasks</button>
-        <button onclick="showView('schedule')">РАСПИСАНИЕ</button>
-    </div>
 
-    <div id="main-content">
-        <div id="view-tasks" class="view">
-            <h1 class="glitch" data-text="MENU">MENU</h1>
-            <button onclick="showToday()" class="alert-btn">СЕГОДНЯ</button>
-            <button onclick="showTomorrow()" class="warn-btn">ЗАВТРА</button>
-
-            <div id="task-list"></div>
-        </div>
-
-        <div id="view-calendar" class="view" style="display:none;">
+    <div id="left-panel">
+        <div id="calendar-section">
             <div class="calendar-header">
-                <button class="cyan-button" onclick="changeMonth(-1)">&#9664; PREV</button>
+                <button class="cyan-button" onclick="changeMonth(-1)">&#9664;</button>
                 <h2 id="calendar-month-title">МЕСЯЦ</h2>
-                <button class="cyan-button" onclick="changeMonth(1)">NEXT &#9654;</button>
+                <button class="cyan-button" onclick="changeMonth(1)">&#9654;</button>
             </div>
             <div class="calendar-weekdays">
                 <div>ПН</div><div>ВТ</div><div>СР</div><div>ЧТ</div><div>ПТ</div><div>СБ</div><div>ВС</div>
@@ -34,66 +21,64 @@
             <div id="calendar-grid"></div>
         </div>
 
-        <div id="view-tutorial" class="view" style="display:none;">
-            <h1>Briefing</h1>
-            <p>Welcome to the time management system of the control department.</p>
-            <p>1. Add tasks to the list of directives.</p>
-            <p>2. Keep track of deadlines on the monitoring grid.</p>
-            <button class="cyan-button" onclick="finishTutorial()">Clear</button>
-        </div>
+        <div id="schedule-section" class="add-task-form">
+            <h3 style="margin:0 0 10px 0;">НОВАЯ ДИРЕКТИВА</h3>
+            <input type="text" id="sched-title" placeholder="Название задачи" style="width:100%; box-sizing:border-box;">
 
-        <div id="view-schedule" class="view" style="display:none;">
-            <h1>ПРОТОКОЛ МАССОВОЙ ДИРЕКТИВЫ</h1>
-            <div class="add-task-form">
-                <input type="text" id="sched-title" placeholder="Название задачи">
-
-                <div style="margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                    <label>Начало:</label>
-                    <input type="date" id="sched-start">
-                    <input type="time" id="sched-time-from" value="09:00">
-                    <span>—</span>
-                    <input type="time" id="sched-time-to" value="10:00">
-                </div>
-
-                <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
-                    <label>Конец:</label>
-                    <input type="date" id="sched-end">
-                </div>
-
-                <textarea id="sched-desc" placeholder="Описание" style="margin-top:10px; width:100%; background:#000; border:1px solid #00f2ff; color:#00f2ff; padding:8px; font-family:'Courier New',monospace; resize:vertical; min-height:60px; box-sizing:border-box;"></textarea>
-
-                <div style="margin-top:10px;">
-                    <label style="display:block; margin-bottom:6px;">Дни недели:</label>
-                    <div style="display:flex; gap:14px; flex-wrap:wrap;">
-                        <label><input type="checkbox" class="sched-day-cb" value="1"> ПН</label>
-                        <label><input type="checkbox" class="sched-day-cb" value="2"> ВТ</label>
-                        <label><input type="checkbox" class="sched-day-cb" value="3"> СР</label>
-                        <label><input type="checkbox" class="sched-day-cb" value="4"> ЧТ</label>
-                        <label><input type="checkbox" class="sched-day-cb" value="5"> ПТ</label>
-                        <label><input type="checkbox" class="sched-day-cb" value="6"> СБ</label>
-                        <label><input type="checkbox" class="sched-day-cb" value="0"> ВС</label>
-                    </div>
-                </div>
-
-                <div style="margin-top:10px;">
-                    <label><input type="checkbox" id="sched-biweekly"> ЧЕРЕДУЮЩИЕСЯ НЕДЕЛИ (ЧЕТ/НЕЧЕТ)</label>
-                </div>
-
-                <div style="margin-top:10px;">
-                    <label style="display:block; margin-bottom:6px;">Повтор: </label>
-                    <select id="sched-repeat" style="background:#000; border:1px solid #00f2ff; color:#00f2ff; padding:6px; font-family:'Courier New',monospace;">
-                        <option value="none">БЕЗ ПОВТОРА</option>
-                        <option value="daily">ЕЖЕДНЕВНО</option>
-                        <option value="monthly">ЕЖЕМЕСЯЧНО</option>
-                        <option value="yearly">ЕЖЕГОДНО</option>
-                    </select>
-                </div>
-
-                <button class="cyan-button" style="margin-top:15px;" onclick="handleCreateSchedule()">
-                    ИНИЦИИРОВАТЬ ЦИКЛ
-                </button>
+            <div style="margin-top:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <label>Начало:</label>
+                <input type="date" id="sched-start">
+                <input type="time" id="sched-time-from" value="09:00">
+                <span>—</span>
+                <input type="time" id="sched-time-to" value="10:00">
             </div>
+
+            <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+                <label>Конец:</label>
+                <input type="date" id="sched-end">
+            </div>
+
+            <textarea id="sched-desc" placeholder="Описание" style="margin-top:8px; width:100%; background:#000; border:1px solid #00f2ff; color:#00f2ff; padding:8px; font-family:'Courier New',monospace; resize:vertical; min-height:50px; box-sizing:border-box;"></textarea>
+
+            <div style="margin-top:8px;">
+                <label style="display:block; margin-bottom:4px;">Дни недели:</label>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <label><input type="checkbox" class="sched-day-cb" value="1"> ПН</label>
+                    <label><input type="checkbox" class="sched-day-cb" value="2"> ВТ</label>
+                    <label><input type="checkbox" class="sched-day-cb" value="3"> СР</label>
+                    <label><input type="checkbox" class="sched-day-cb" value="4"> ЧТ</label>
+                    <label><input type="checkbox" class="sched-day-cb" value="5"> ПТ</label>
+                    <label><input type="checkbox" class="sched-day-cb" value="6"> СБ</label>
+                    <label><input type="checkbox" class="sched-day-cb" value="0"> ВС</label>
+                </div>
+            </div>
+
+            <div style="margin-top:8px;">
+                <label><input type="checkbox" id="sched-biweekly"> ЧЕРЕДУЮЩИЕСЯ НЕДЕЛИ (ЧЕТ/НЕЧЕТ)</label>
+            </div>
+
+            <div style="margin-top:8px;">
+                <select id="sched-repeat" style="background:#000; border:1px solid #00f2ff; color:#00f2ff; padding:6px; font-family:'Courier New',monospace;">
+                    <option value="none">БЕЗ ПОВТОРА</option>
+                    <option value="daily">ЕЖЕДНЕВНО</option>
+                    <option value="monthly">ЕЖЕМЕСЯЧНО</option>
+                    <option value="yearly">ЕЖЕГОДНО</option>
+                </select>
+            </div>
+
+            <button class="cyan-button" style="margin-top:12px; width:100%;" onclick="handleCreateSchedule()">
+                ИНИЦИИРОВАТЬ ЦИКЛ
+            </button>
         </div>
+    </div>
+
+    <div id="right-panel">
+        <div id="task-filters">
+            <button onclick="loadTasks()" class="cyan-button">ВСЕ</button>
+            <button onclick="showToday()" class="alert-btn">СЕГОДНЯ</button>
+            <button onclick="showTomorrow()" class="warn-btn">ЗАВТРА</button>
+        </div>
+        <div id="task-list"></div>
     </div>
 
     <div id="character-area">
@@ -110,7 +95,7 @@
             <p>Добро пожаловать в систему мониторинга. Здесь вы будете назначать задачи отделам.</p>
             <ul>
                 <li>Календарь отображает плотность аномалий (задач).</li>
-                <li>Меню слева позволяет переключать режимы обзора.</li>
+                <li>Форма слева позволяет создавать новые директивы.</li>
                 <li>Анжела будет уведомлять вас о критических изменениях.</li>
             </ul>
             <button class="cyan-button" onclick="closeTutorial()">НАЧАТЬ РАБОТУ</button>

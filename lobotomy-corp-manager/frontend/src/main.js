@@ -251,7 +251,6 @@ window.handleCreateSchedule = async function() {
     speak(`Цикл завершен. Создано ${totalCount} записей. Расписание синхронизировано.`);
 
     loadTasks();
-    showView('tasks');
 }
 
 function getLocalDateString(date) {
@@ -264,7 +263,6 @@ function getLocalDateString(date) {
 window.showToday = function() {
     const todayStr = getLocalDateString(new Date());
     const todayTasks = allTasks.filter(t => t.deadline === todayStr);
-    showView('tasks');
     const list = document.getElementById('task-list');
     if (todayTasks.length === 0) {
         list.innerHTML = '<h1>ДИРЕКТИВ НА СЕГОДНЯ НЕТ</h1>';
@@ -280,7 +278,6 @@ window.showTomorrow = function() {
     date.setDate(date.getDate() + 1);
     const tomorrowStr = getLocalDateString(date);
     const tomorrowTasks = allTasks.filter(t => t.deadline === tomorrowStr);
-    showView('tasks');
     const list = document.getElementById('task-list');
     if (tomorrowTasks.length === 0) {
         list.innerHTML = '<h1>ПЛАНЫ НА ЗАВТРА ОТСУТСТВУЮТ</h1>';
