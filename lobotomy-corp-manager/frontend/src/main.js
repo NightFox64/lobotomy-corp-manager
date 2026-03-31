@@ -134,23 +134,6 @@ function renderTaskList(tasks) {
     list.innerHTML = tasks.map(taskHTML).join('');
 }
 
-window.handleAddTask = async function() {
-    const title = document.getElementById('task-title').value;
-    const date = document.getElementById('task-date').value;
-    const time = document.getElementById('task-time').value;
-    const repeat = document.getElementById('task-repeat').value;
-
-    if (!title || !date) {
-        speak("Ошибка: Недостаточно данных для формирования протокола.");
-        return;
-    }
-
-    await AddTask(title, "", date, time, repeat);
-    document.getElementById('task-title').value = '';
-    speak("Директива внесена. Мониторинг запущен.");
-    loadTasks();
-}
-
 window.handleToggle = async function(id) {
     await ToggleTask(id);
     await loadTasks();
@@ -241,20 +224,32 @@ function renderCalendar() {
 
 window.handleCreateSchedule = async function() {
     const title = document.getElementById('sched-title').value;
-    const time = document.getElementById('sched-time').value;
-    const day = parseInt(document.getElementById('sched-day').value);
+    const timeFrom = document.getElementById('sched-time-from').value;
     const start = document.getElementById('sched-start').value;
     const end = document.getElementById('sched-end').value;
+    const days = [...document.querySelectorAll('.sched-day-cb:checked')].map(cb => parseInt(cb.value));
 
     if (!title || !start || !end) {
-        speak("Управляющий, данные не полны. Я не могу рассчитать цикл без дат.");
+        speak("Управляющий, данные не полны. Укажите название и даты.");
         return;
     }
 
     const isBiweekly = document.getElementById('sched-biweekly').checked;
-    const result = await CreateSchedule(title, time, day, start, end, isBiweekly);
-    speak(result + " Расписание синхронизировано.");
-    
+    const repeat = document.getElementById('sched-repeat').value;
+    let totalCount = 0;
+
+    if (days.length > 0) {
+        for (const day of days) {
+            const result = await CreateSchedule(title, timeFrom, day, start, end, isBiweekly);
+            const match = result.match(/\d+/);
+            if (match) totalCount += parseInt(match[0]);
+        }
+    } else {
+        await AddTask(title, document.getElementById('sched-desc').value, start, timeFrom, repeat);
+        totalCount = 1;
+    }
+    speak(`Цикл завершен. Создано ${totalCount} записей. Расписание синхронизировано.`);
+
     loadTasks();
     showView('tasks');
 }

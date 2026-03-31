@@ -64,6 +64,8 @@ func (a *App) createNextRecurringTask(t backend.Task) {
 		nextDate = currentDate.AddDate(0, 0, 7)
 	case "monthly":
 		nextDate = currentDate.AddDate(0, 1, 0)
+	case "yearly":
+		nextDate = currentDate.AddDate(1, 0, 0)
 	}
 	newTask := backend.Task{
 		Title:       t.Title,
@@ -165,7 +167,6 @@ func (a *App) reminderLoop() {
 		dateStr := now.Format("2006-01-02")
 		timeStr := now.Format("15:04")
 
-		// exact alarm
 		var task backend.Task
 		result := backend.DB.Where("deadline = ? AND time = ? AND is_done = ?", dateStr, timeStr, false).First(&task)
 		if result.Error == nil {
@@ -176,7 +177,6 @@ func (a *App) reminderLoop() {
 			}
 		}
 
-		// advance reminders
 		var cfg backend.Config
 		backend.DB.First(&cfg)
 		offsets := [3]int{cfg.Reminder1Min, cfg.Reminder2Min, cfg.Reminder3Min}
