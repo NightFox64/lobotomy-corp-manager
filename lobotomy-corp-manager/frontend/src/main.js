@@ -383,20 +383,25 @@ function playReminderSound(snd) {
     snd.onended = () => {
         activeReminderSound = null;
         bgMusic.play().catch(() => {});
+        updateStopBtn();
     };
+    updateStopBtn();
 }
 
-function stopReminderSound() {
+window.stopReminderSound = function stopReminderSound() {
     if (activeReminderSound) {
         activeReminderSound.pause();
         activeReminderSound.currentTime = 0;
         activeReminderSound.onended = null;
         activeReminderSound = null;
         bgMusic.play().catch(() => {});
+        updateStopBtn();
     }
 }
 
-document.addEventListener('click', stopReminderSound);
+function updateStopBtn() {
+    document.getElementById('stop-alarm-btn').style.display = activeReminderSound ? 'block' : 'none';
+}
 
 EventsOn('alarm-trigger', (task) => {
     playReminderSound(reminderSounds[2]);
