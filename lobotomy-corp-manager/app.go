@@ -4,11 +4,9 @@ import (
 	"context"
 	"fmt"
 	"lobotomy-corp-manager/backend"
-	"os"
 	"time"
 
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
-	"golang.org/x/sys/windows/registry"
 )
 
 type App struct {
@@ -101,16 +99,7 @@ func (a *App) FinishTutorial() {
 }
 
 func (a *App) SetAutoStart(enable bool) error {
-	k, _, err := registry.CreateKey(registry.CURRENT_USER, `Software\Microsoft\Windows\CurrentVersion\Run`, registry.SET_VALUE)
-	if err != nil {
-		return err
-	}
-	defer k.Close()
-	if enable {
-		execPath, _ := os.Executable()
-		return k.SetStringValue("LobotomyCalendar", execPath)
-	}
-	return k.DeleteValue("LobotomyCalendar")
+	return setAutoStart(enable)
 }
 
 func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, startDate string, endDate string, isBiweekly bool) string {

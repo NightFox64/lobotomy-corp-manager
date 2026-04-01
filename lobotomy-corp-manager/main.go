@@ -7,7 +7,6 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
-	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 var assets embed.FS
@@ -17,6 +16,7 @@ var trayIcon []byte
 
 func main() {
 	app := NewApp()
+	po := platformOptions()
 
 	err := wails.Run(&options.App{
 		Title:             "Lobotomy Calendar",
@@ -33,12 +33,9 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
-		Windows: &windows.Options{
-			WebviewIsTransparent: false,
-			WindowIsTranslucent:  false,
-			DisableWindowIcon:    false,
-			OnSuspend:            func() {},
-		},
+		Windows: po.Windows,
+		Mac:     po.Mac,
+		Linux:   po.Linux,
 	})
 
 	if err != nil {
