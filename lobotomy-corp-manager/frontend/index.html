@@ -77,6 +77,7 @@
             <button onclick="loadTasks()" class="cyan-button">ВСЕ</button>
             <button onclick="showToday()" class="alert-btn">СЕГОДНЯ</button>
             <button onclick="showTomorrow()" class="warn-btn">ЗАВТРА</button>
+            <input type="date" id="filter-date" onchange="filterByDate(this.value)" style="background:#000; border:1px solid #00f2ff; color:#00f2ff; padding:6px; font-family:'Courier New',monospace; cursor:pointer;">
         </div>
         <div id="task-list"></div>
     </div>

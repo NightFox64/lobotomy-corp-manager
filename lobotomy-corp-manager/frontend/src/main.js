@@ -102,6 +102,7 @@ window.loadTasks = async function() {
     try {
         const tasks = await GetTasks();
         allTasks = tasks || [];
+        document.getElementById('filter-date').value = '';
         renderTaskList(allTasks);
         renderCalendar();
         checkSpriteState();
@@ -261,6 +262,7 @@ function getLocalDateString(date) {
 }
 
 window.showToday = function() {
+    document.getElementById('filter-date').value = '';
     const todayStr = getLocalDateString(new Date());
     const todayTasks = allTasks.filter(t => t.deadline === todayStr);
     const list = document.getElementById('task-list');
@@ -274,6 +276,7 @@ window.showToday = function() {
 }
 
 window.showTomorrow = function() {
+    document.getElementById('filter-date').value = '';
     const date = new Date();
     date.setDate(date.getDate() + 1);
     const tomorrowStr = getLocalDateString(date);
@@ -289,23 +292,18 @@ window.showTomorrow = function() {
 }
 
 window.inspectDay = function(dateStr) {
-    const dayTasks = allTasks.filter(t => t.deadline === dateStr);
-    const modal = document.getElementById('day-modal');
-    const modalList = document.getElementById('modal-task-list');
-    const modalTitle = document.getElementById('modal-date-title');
+    document.getElementById('filter-date').value = dateStr;
+    filterByDate(dateStr);
+}
 
-    modalTitle.innerText = "ОТЧЕТ ЗА " + dateStr;
-    modal.style.display = 'flex';
-    
-    if (dayTasks.length === 0) {
-        modalList.innerHTML = "<p>Задач не назначено.</p>";
-    } else {
-        modalList.innerHTML = dayTasks.map(t => `
-            <div class="modal-task-item">
-                <b>${t.time}</b> - ${t.title} [${t.is_done ? 'ЗАВЕРШЕНО' : 'В ОЖИДАНИИ'}]
-            </div>
-        `).join('');
-    }
+window.filterByDate = function(dateStr) {
+    if (!dateStr) { loadTasks(); return; }
+    const [y, m, d] = dateStr.split('-');
+    const label = `${d}.${m}.${y}`;
+    const dayTasks = allTasks.filter(t => t.deadline === dateStr);
+    const list = document.getElementById('task-list');
+    list.innerHTML = `<h1>ДИРЕКТИВЫ НА ${label}</h1>` + (dayTasks.length ? dayTasks.map(taskHTML).join('') : '<div class="no-tasks">НЕТ ДИРЕКТИВ НА ЭТОТ ДЕНЬ</div>');
+    speak(`На ${label} назначено ${dayTasks.length} задач.`);
 }
 
 window.closeModal = () => document.getElementById('day-modal').style.display = 'none';
