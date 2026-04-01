@@ -38,7 +38,7 @@
                 <input type="date" id="sched-end">
             </div>
 
-            <textarea id="sched-desc" placeholder="Описание" style="margin-top:8px; width:100%; background:#000; border:1px solid #00f2ff; color:#00f2ff; padding:8px; font-family:'Courier New',monospace; resize:vertical; min-height:50px; box-sizing:border-box;"></textarea>
+            <textarea id="sched-desc" placeholder="Описание" style="margin-top:8px; width:100%; min-height:50px;"></textarea>
 
             <div style="margin-top:8px;">
                 <label style="display:block; margin-bottom:4px;">Дни недели:</label>
@@ -58,7 +58,7 @@
             </div>
 
             <div style="margin-top:8px;">
-                <select id="sched-repeat" style="background:#000; border:1px solid #00f2ff; color:#00f2ff; padding:6px; font-family:'Courier New',monospace;">
+                <select id="sched-repeat">
                     <option value="none">БЕЗ ПОВТОРА</option>
                     <option value="daily">ЕЖЕДНЕВНО</option>
                     <option value="monthly">ЕЖЕМЕСЯЧНО</option>
@@ -77,7 +77,7 @@
             <button onclick="loadTasks()" class="cyan-button">ВСЕ</button>
             <button onclick="showToday()" class="alert-btn">СЕГОДНЯ</button>
             <button onclick="showTomorrow()" class="warn-btn">ЗАВТРА</button>
-            <input type="date" id="filter-date" onchange="filterByDate(this.value)" style="background:#000; border:1px solid #00f2ff; color:#00f2ff; padding:6px; font-family:'Courier New',monospace; cursor:pointer;">
+            <input type="date" id="filter-date" onchange="filterByDate(this.value)">
         </div>
         <div id="task-list"></div>
     </div>
@@ -121,9 +121,9 @@
             </div>
             <input type="hidden" id="edit-id">
             <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-                <input type="text" id="edit-title" placeholder="Название">
-                <input type="date" id="edit-date">
-                <input type="time" id="edit-time">
+                <input type="text" id="edit-title" placeholder="Название" style="width:100%; box-sizing:border-box;">
+                <input type="date" id="edit-date" style="width:100%; box-sizing:border-box;">
+                <input type="time" id="edit-time" style="width:100%; box-sizing:border-box;">
                 <button class="cyan-button" onclick="handleSaveEdit()">СОХРАНИТЬ</button>
             </div>
         </div>

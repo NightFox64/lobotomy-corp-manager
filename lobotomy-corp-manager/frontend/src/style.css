@@ -302,8 +302,22 @@ body::after {
 }
 
 .modal-header {
-    display: flex; justify-content: space-between; border-bottom: 1px solid #00f2ff;
+    display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #00f2ff;
     margin-bottom: 15px; padding-bottom: 10px;
+}
+
+.modal-header button {
+    background: transparent;
+    border: 1px solid #00f2ff;
+    color: #00f2ff;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    padding: 4px 10px;
+    font-size: 14px;
+}
+
+.modal-header button:hover {
+    background: rgba(0, 242, 255, 0.1);
 }
 
 .modal-task-item {
@@ -323,6 +337,14 @@ body::after {
     padding: 8px 16px;
     cursor: pointer;
     font-family: 'Courier New', monospace;
+}
+
+.cyan-button:hover {
+    background: rgba(0, 242, 255, 0.1);
+}
+
+.alert-btn:hover {
+    background: rgba(255, 68, 68, 0.1);
 }
 
 #settings-btn {
@@ -361,6 +383,90 @@ body::after {
 
 #tutorial-btn:hover {
     background: rgba(0, 242, 255, 0.1);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #050a0a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00f2ff44;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00f2ff99;
+}
+
+/* Select */
+select {
+    background: #000;
+    border: 1px solid #00f2ff;
+    color: #00f2ff;
+    padding: 6px;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    outline: none;
+}
+
+select:focus {
+    box-shadow: 0 0 5px rgba(0, 242, 255, 0.4);
+}
+
+/* Textarea */
+textarea {
+    background: #000;
+    border: 1px solid #00f2ff;
+    color: #00f2ff;
+    padding: 8px;
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+}
+
+textarea:focus {
+    box-shadow: 0 0 5px rgba(0, 242, 255, 0.4);
+}
+
+/* Number inputs */
+input[type="number"] {
+    background: #000;
+    border: 1px solid #00f2ff;
+    color: #00f2ff;
+    padding: 4px 8px;
+    font-family: 'Courier New', monospace;
+    outline: none;
+}
+
+input[type="number"]:focus {
+    box-shadow: 0 0 5px rgba(0, 242, 255, 0.4);
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+    accent-color: #00f2ff;
+    cursor: pointer;
+}
+
+/* Text, date, time inputs outside .add-task-form */
+input[type="text"], input[type="date"], input[type="time"] {
+    background: #000;
+    border: 1px solid #00f2ff;
+    color: #00f2ff;
+    padding: 6px;
+    font-family: 'Courier New', monospace;
+    outline: none;
+}
+
+input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus {
+    box-shadow: 0 0 5px rgba(0, 242, 255, 0.4);
 }
 
 #stop-alarm-btn {
