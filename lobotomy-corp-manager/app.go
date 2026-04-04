@@ -104,6 +104,38 @@ func (a *App) FinishTutorial() {
 // 	return SetAutoStart(enable)
 // }
 
+func (a *App) CreateRepeatingTasks(title string, taskTime string, startDate string, endDate string, repeat string) string {
+	start, _ := time.Parse("2006-01-02", startDate)
+	end, _ := time.Parse("2006-01-02", endDate)
+
+	count := 0
+	for d := start; !d.After(end); {
+		task := backend.Task{
+			Title:    title,
+			Deadline: d.Format("2006-01-02"),
+			Time:     taskTime,
+			IsDone:   false,
+			Repeat:   "none",
+		}
+		backend.DB.Create(&task)
+		count++
+		switch repeat {
+		case "daily":
+			d = d.AddDate(0, 0, 1)
+		case "monthly":
+			d = d.AddDate(0, 1, 0)
+		case "yearly":
+			d = d.AddDate(1, 0, 0)
+		default:
+			break
+		}
+		if repeat == "none" {
+			break
+		}
+	}
+	return fmt.Sprintf("Цикл завершен. Создано %d записей.", count)
+}
+
 func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, startDate string, endDate string, isBiweekly bool) string {
 	start, _ := time.Parse("2006-01-02", startDate)
 	end, _ := time.Parse("2006-01-02", endDate)

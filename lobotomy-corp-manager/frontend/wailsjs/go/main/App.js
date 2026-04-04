@@ -10,6 +10,10 @@ export function CheckTutorial() {
   return window['go']['main']['App']['CheckTutorial']();
 }
 
+export function CreateRepeatingTasks(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['main']['App']['CreateRepeatingTasks'](arg1, arg2, arg3, arg4, arg5);
+}
+
 export function CreateSchedule(arg1, arg2, arg3, arg4, arg5, arg6) {
   return window['go']['main']['App']['CreateSchedule'](arg1, arg2, arg3, arg4, arg5, arg6);
 }

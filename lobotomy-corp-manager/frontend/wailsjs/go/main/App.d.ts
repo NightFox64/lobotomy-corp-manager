@@ -6,6 +6,8 @@ export function AddTask(arg1:string,arg2:string,arg3:string,arg4:string,arg5:str
 
 export function CheckTutorial():Promise<boolean>;
 
+export function CreateRepeatingTasks(arg1:string,arg2:string,arg3:string,arg4:string,arg5:string):Promise<string>;
+
 export function CreateSchedule(arg1:string,arg2:string,arg3:number,arg4:string,arg5:string,arg6:boolean):Promise<string>;
 
 export function DeleteTask(arg1:number):Promise<void>;

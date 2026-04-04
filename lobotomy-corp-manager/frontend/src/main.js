@@ -1,5 +1,5 @@
 import './style.css';
-import { GetTasks, AddTask, CreateSchedule, ToggleTask, DeleteTask, UpdateTask, CheckTutorial, FinishTutorial, GetReminderSettings, SetReminderSettings } from '../wailsjs/go/main/App';
+import { GetTasks, AddTask, CreateSchedule, CreateRepeatingTasks, ToggleTask, DeleteTask, UpdateTask, CheckTutorial, FinishTutorial, GetReminderSettings, SetReminderSettings } from '../wailsjs/go/main/App';
 import { EventsOn, WindowShow } from '../wailsjs/runtime/runtime';
 
 let allTasks = [];
@@ -80,6 +80,13 @@ window.switchTab = function(tab) {
     document.getElementById('tab-remind').style.display = tab === 'remind' ? 'block' : 'none';
     document.getElementById('tab-sound-btn').classList.toggle('tab-active', tab === 'sound');
     document.getElementById('tab-remind-btn').classList.toggle('tab-active', tab === 'remind');
+}
+
+function updateRepeatAvailability() {
+    const anyChecked = [...document.querySelectorAll('.sched-day-cb:checked')].length > 0;
+    const repeatSelect = document.getElementById('sched-repeat');
+    repeatSelect.disabled = anyChecked;
+    if (anyChecked) repeatSelect.value = 'none';
 }
 
 async function init() {
@@ -255,8 +262,9 @@ window.handleCreateSchedule = async function() {
             if (match) totalCount += parseInt(match[0]);
         }
     } else {
-        await AddTask(title, document.getElementById('sched-desc').value, start, timeFrom, repeat);
-        totalCount = 1;
+        const result = await CreateRepeatingTasks(title, timeFrom, start, end, repeat);
+        const match = result.match(/\d+/);
+        if (match) totalCount += parseInt(match[0]);
     }
     speak(`Цикл завершен. Создано ${totalCount} записей. Расписание синхронизировано.`);
 
@@ -432,6 +440,7 @@ function triggerEmergencyEffect() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.sched-day-cb').forEach(cb => cb.addEventListener('change', updateRepeatAvailability));
     window.addEventListener('wails:ready', init);
     if (window.runtime) init();
 });
