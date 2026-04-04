@@ -210,11 +210,35 @@ body::after {
 
 .add-task-form {
     padding: 12px;
-    border: 1px dashed #00f2ff;
+    border: 1px solid #00f2ff;
     background: rgba(0, 242, 255, 0.02);
 }
 
-.add-task-form input[type="text"],
+.day-picker {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.day-picker-labels,
+.day-picker-checks {
+    display: contents;
+}
+
+.day-picker-labels span {
+    text-align: center;
+    font-size: 12px;
+    font-family: 'Norwester', sans-serif;
+    color: #00f2ff;
+    letter-spacing: 1px;
+}
+
+.day-picker-checks input[type="checkbox"] {
+    display: block;
+    margin: 4px auto 0;
+}
+
+
 .add-task-form input[type="date"],
 .add-task-form input[type="time"] {
     background: #000;
@@ -222,6 +246,12 @@ body::after {
     color: #00f2ff;
     padding: 6px;
     font-family: 'Railway', 'Courier New', monospace;
+}
+
+.add-task-form input[type="date"]::-webkit-calendar-picker-indicator,
+.add-task-form input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) sepia(1) saturate(5) hue-rotate(155deg);
+    cursor: pointer;
 }
 
 .calendar-day {
