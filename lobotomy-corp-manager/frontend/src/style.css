@@ -312,6 +312,7 @@ body::after {
     background: #f2a300;
     width: 100%;
     box-shadow: 0 0 5px #f2a300;
+    margin-bottom: 1px;
 }
 
 .alert-btn {
