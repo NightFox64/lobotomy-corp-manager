@@ -64,6 +64,8 @@ func (a *App) createNextRecurringTask(t backend.Task) {
 		nextDate = currentDate.AddDate(0, 1, 0)
 	case "yearly":
 		nextDate = currentDate.AddDate(1, 0, 0)
+	default:
+		return
 	}
 	newTask := backend.Task{
 		Title:       t.Title,
@@ -98,9 +100,9 @@ func (a *App) FinishTutorial() {
 	backend.DB.Model(&backend.Config{}).Where("id = ?", 1).Update("is_tutorial_finished", true)
 }
 
-func (a *App) SetAutoStart(enable bool) error {
-	return setAutoStart(enable)
-}
+// func (a *App) SetAutoStart(enable bool) error {
+// 	return SetAutoStart(enable)
+// }
 
 func (a *App) CreateSchedule(title string, taskTime string, dayOfWeek int, startDate string, endDate string, isBiweekly bool) string {
 	start, _ := time.Parse("2006-01-02", startDate)
@@ -149,7 +151,11 @@ func (a *App) reminderLoop() {
 
 	lastNotifiedID := uint(0)
 	lastNotifiedMinute := -1
-	lastReminderID := [3]uint{0, 0, 0}
+	type reminderKey struct {
+		id   uint
+		date string
+	}
+	lastReminderKey := [3]reminderKey{}
 
 	for range ticker.C {
 		now := time.Now()
@@ -180,13 +186,16 @@ func (a *App) reminderLoop() {
 			targetTime := now.Add(time.Duration(offset) * time.Minute)
 			targetStr := targetTime.Format("15:04")
 			for _, t := range upcoming {
-				if t.Time == targetStr && lastReminderID[i] != t.ID {
-					wRuntime.EventsEmit(a.ctx, "reminder-trigger", map[string]interface{}{
-						"index":   i + 1,
-						"minutes": offset,
-						"title":   t.Title,
-					})
-					lastReminderID[i] = t.ID
+				if t.Time == targetStr {
+					key := reminderKey{id: t.ID, date: dateStr}
+					if lastReminderKey[i] != key {
+						wRuntime.EventsEmit(a.ctx, "reminder-trigger", map[string]interface{}{
+							"index":   i + 1,
+							"minutes": offset,
+							"title":   t.Title,
+						})
+						lastReminderKey[i] = key
+					}
 				}
 			}
 		}

@@ -1,3 +1,18 @@
+@font-face {
+    font-family: 'Norwester';
+    src: url('./assets/fonts/norwester.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Railway';
+    src: url('./assets/fonts/Railway.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'GillSansMT';
+    src: url('./assets/fonts/gillsansmt.ttf') format('truetype');
+}
+
 body {
     background-color: #050a0a;
     padding: 0;
@@ -6,7 +21,7 @@ body {
     background-position: center;
     background-attachment: fixed;
     color: #00f2ff;
-    font-family: 'Courier New', monospace;
+    font-family: 'Railway', 'Courier New', monospace;
     margin: 0;
     height: 100vh;
     overflow: hidden;
@@ -93,12 +108,15 @@ body::after {
     white-space: pre-wrap;
     line-height: 1.5;
     font-size: 16px;
+    font-family: 'GillSansMT', 'Gill Sans MT', 'Gill Sans', sans-serif;
 }
 
 #dialog-name {
     font-weight: bold;
     border-bottom: 1px solid #00f2ff;
     margin-bottom: 5px;
+    font-family: 'Norwester', sans-serif;
+    letter-spacing: 2px;
 }
 
 #sprite {
@@ -146,6 +164,7 @@ body::after {
     max-width: 500px;
     background: #0c1012;
     box-shadow: 0 0 30px rgba(242, 163, 0, 0.3);
+    font-family: 'GillSansMT', 'Gill Sans MT', sans-serif;
 }
 
 .task-item {
@@ -202,7 +221,7 @@ body::after {
     border: 1px solid #00f2ff;
     color: #00f2ff;
     padding: 6px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Railway', 'Courier New', monospace;
 }
 
 .calendar-day {
@@ -231,6 +250,8 @@ body::after {
     padding-bottom: 5px;
     margin-bottom: 5px;
     font-size: 12px;
+    font-family: 'Norwester', sans-serif;
+    letter-spacing: 1px;
 }
 
 .calendar-day.has-task {
@@ -252,6 +273,8 @@ body::after {
 .calendar-header h2 {
     margin: 0;
     font-size: 14px;
+    font-family: 'Norwester', sans-serif;
+    letter-spacing: 2px;
 }
 
 .task-dot {
@@ -268,7 +291,7 @@ body::after {
     background: transparent;
     padding: 8px 16px;
     cursor: pointer;
-    font-family: 'Courier New', monospace;
+    font-family: 'Norwester', sans-serif;
 }
 
 .warn-btn {
@@ -278,7 +301,7 @@ body::after {
     background: transparent;
     padding: 8px 16px;
     cursor: pointer;
-    font-family: 'Courier New', monospace;
+    font-family: 'Norwester', sans-serif;
 }
 
 .warn-btn:hover {
@@ -304,6 +327,8 @@ body::after {
 .modal-header {
     display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #00f2ff;
     margin-bottom: 15px; padding-bottom: 10px;
+    font-family: 'Norwester', sans-serif;
+    letter-spacing: 1px;
 }
 
 .modal-header button {
@@ -311,7 +336,7 @@ body::after {
     border: 1px solid #00f2ff;
     color: #00f2ff;
     cursor: pointer;
-    font-family: 'Courier New', monospace;
+    font-family: 'Railway', 'Courier New', monospace;
     padding: 4px 10px;
     font-size: 14px;
 }
@@ -336,7 +361,7 @@ body::after {
     color: #00f2ff;
     padding: 8px 16px;
     cursor: pointer;
-    font-family: 'Courier New', monospace;
+    font-family: 'Norwester', sans-serif;
 }
 
 .cyan-button:hover {
@@ -410,7 +435,7 @@ select {
     border: 1px solid #00f2ff;
     color: #00f2ff;
     padding: 6px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Railway', 'Courier New', monospace;
     cursor: pointer;
     outline: none;
 }
@@ -425,7 +450,7 @@ textarea {
     border: 1px solid #00f2ff;
     color: #00f2ff;
     padding: 8px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Railway', 'Courier New', monospace;
     resize: vertical;
     outline: none;
     box-sizing: border-box;
@@ -441,7 +466,7 @@ input[type="number"] {
     border: 1px solid #00f2ff;
     color: #00f2ff;
     padding: 4px 8px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Railway', 'Courier New', monospace;
     outline: none;
 }
 
@@ -461,7 +486,7 @@ input[type="text"], input[type="date"], input[type="time"] {
     border: 1px solid #00f2ff;
     color: #00f2ff;
     padding: 6px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Railway', 'Courier New', monospace;
     outline: none;
 }
 
@@ -496,7 +521,7 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus {
     color: #00f2ff;
     padding: 8px 16px;
     cursor: pointer;
-    font-family: 'Courier New', monospace;
+    font-family: 'Norwester', sans-serif;
     font-size: 12px;
 }
 
@@ -530,7 +555,7 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus {
     border: 1px solid #00f2ff;
     color: #00f2ff;
     padding: 4px 8px;
-    font-family: 'Courier New', monospace;
+    font-family: 'Railway', 'Courier New', monospace;
 }
 
 #emergency-overlay {

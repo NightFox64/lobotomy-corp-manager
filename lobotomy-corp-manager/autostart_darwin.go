@@ -20,8 +20,11 @@ func setAutoStart(enable bool) error {
 		return os.Remove(plist)
 	}
 
-	execPath, _ := os.Executable()
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	execPath, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
 	content := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
@@ -38,5 +41,5 @@ func setAutoStart(enable bool) error {
 	<true/>
 </dict>
 </plist>`, execPath)
-	return os.WriteFile(plist, []byte(content), 0644)
+	return os.WriteFile(plist, []byte(content), 0600)
 }

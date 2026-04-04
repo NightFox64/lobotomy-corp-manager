@@ -111,12 +111,21 @@ window.loadTasks = async function() {
     }
 }
 
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function taskHTML(t) {
     return `
         <div class="task-item ${t.is_done ? 'task-done' : ''}">
             <div style="flex-grow: 1;">
-                <span class="task-time">[${t.deadline} | ${t.time}]</span>
-                <div class="task-title">${t.title}</div>
+                <span class="task-time">[${escapeHtml(t.deadline)} | ${escapeHtml(t.time)}]</span>
+                <div class="task-title">${escapeHtml(t.title)}</div>
             </div>
             <button class="task-btn done" onclick="handleToggle(${t.id})">✔</button>
             <button class="task-btn edit" onclick="openEditModal(${t.id})">✎</button>
@@ -299,7 +308,7 @@ window.inspectDay = function(dateStr) {
 window.filterByDate = function(dateStr) {
     if (!dateStr) { loadTasks(); return; }
     const [y, m, d] = dateStr.split('-');
-    const label = `${d}.${m}.${y}`;
+    const label = `${escapeHtml(d)}.${escapeHtml(m)}.${escapeHtml(y)}`;
     const dayTasks = allTasks.filter(t => t.deadline === dateStr);
     const list = document.getElementById('task-list');
     list.innerHTML = `<h1>ДИРЕКТИВЫ НА ${label}</h1>` + (dayTasks.length ? dayTasks.map(taskHTML).join('') : '<div class="no-tasks">НЕТ ДИРЕКТИВ НА ЭТОТ ДЕНЬ</div>');

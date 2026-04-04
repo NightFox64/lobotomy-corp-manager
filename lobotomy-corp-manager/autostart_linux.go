@@ -20,10 +20,13 @@ func setAutoStart(enable bool) error {
 		return os.Remove(desktop)
 	}
 
-	execPath, _ := os.Executable()
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	execPath, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
 	content := fmt.Sprintf("[Desktop Entry]\nType=Application\nName=Lobotomy Calendar\nExec=%s\nX-GNOME-Autostart-enabled=true\n", execPath)
-	return os.WriteFile(desktop, []byte(content), 0644)
+	return os.WriteFile(desktop, []byte(content), 0600)
 }
