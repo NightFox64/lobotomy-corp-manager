@@ -4,6 +4,7 @@ import { EventsOn, WindowShow } from '../wailsjs/runtime/runtime';
 
 let allTasks = [];
 let currentViewDate = new Date();
+let currentFilter = null; // 'date:YYYY-MM-DD' | 'today' | 'tomorrow' | null
 
 const bgMusic = new Audio('./src/assets/0warning.mp3');
 bgMusic.loop = true;
@@ -106,11 +107,24 @@ async function init() {
 }
 
 window.loadTasks = async function() {
+    currentFilter = null;
+    await refreshTasks();
+}
+
+async function refreshTasks() {
     try {
         const tasks = await GetTasks();
         allTasks = tasks || [];
-        document.getElementById('filter-date').value = '';
-        renderTaskList(allTasks);
+        if (currentFilter === 'today') {
+            showToday();
+        } else if (currentFilter === 'tomorrow') {
+            showTomorrow();
+        } else if (currentFilter) {
+            filterByDate(currentFilter);
+        } else {
+            document.getElementById('filter-date').value = '';
+            renderTaskList(allTasks);
+        }
         renderCalendar();
         checkSpriteState();
     } catch (err) {
@@ -153,7 +167,7 @@ function renderTaskList(tasks) {
 
 window.handleToggle = async function(id) {
     await ToggleTask(id);
-    await loadTasks();
+    await refreshTasks();
     const task = allTasks.find(t => t.id === id);
     if (task && task.is_done) {
         setSprite('good_work');
@@ -163,7 +177,7 @@ window.handleToggle = async function(id) {
 
 window.handleDelete = async function(id) {
     await DeleteTask(id);
-    loadTasks();
+    refreshTasks();
 }
 
 window.openEditModal = function(id) {
@@ -186,7 +200,7 @@ window.handleSaveEdit = async function() {
     await UpdateTask(id, title, date, time);
     closeEditModal();
     speak("Директива обновлена.");
-    loadTasks();
+    refreshTasks();
 }
 
 window.changeMonth = function(offset) {
@@ -279,6 +293,7 @@ function getLocalDateString(date) {
 }
 
 window.showToday = function() {
+    currentFilter = 'today';
     document.getElementById('filter-date').value = '';
     const todayStr = getLocalDateString(new Date());
     const todayTasks = allTasks.filter(t => t.deadline === todayStr);
@@ -293,6 +308,7 @@ window.showToday = function() {
 }
 
 window.showTomorrow = function() {
+    currentFilter = 'tomorrow';
     document.getElementById('filter-date').value = '';
     const date = new Date();
     date.setDate(date.getDate() + 1);
@@ -314,6 +330,7 @@ window.inspectDay = function(dateStr) {
 }
 
 window.filterByDate = function(dateStr) {
+    currentFilter = dateStr || null;
     if (!dateStr) { loadTasks(); return; }
     const [y, m, d] = dateStr.split('-');
     const label = `${escapeHtml(d)}.${escapeHtml(m)}.${escapeHtml(y)}`;
