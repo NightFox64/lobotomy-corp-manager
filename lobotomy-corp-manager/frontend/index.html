@@ -12,41 +12,41 @@
         <div id="calendar-section">
             <div class="calendar-header">
                 <button class="cyan-button" onclick="changeMonth(-1)">&#9664;</button>
-                <h2 id="calendar-month-title">МЕСЯЦ</h2>
+                <h2 id="calendar-month-title">MONTH</h2>
                 <button class="cyan-button" onclick="changeMonth(1)">&#9654;</button>
             </div>
             <div class="calendar-weekdays">
-                <div>ПН</div><div>ВТ</div><div>СР</div><div>ЧТ</div><div>ПТ</div><div>СБ</div><div>ВС</div>
+                <div>MO</div><div>TU</div><div>WE</div><div>TH</div><div>FR</div><div>SA</div><div>SU</div>
             </div>
             <div id="calendar-grid"></div>
         </div>
 
         <div id="schedule-section" class="add-task-form">
-            <h3 style="margin:0 0 10px 0;">НОВАЯ ДИРЕКТИВА</h3>
-            <input type="text" id="sched-title" placeholder="Название задачи" style="width:100%; box-sizing:border-box;">
+            <h3 style="margin:0 0 10px 0;">NEW DIRECTIVE</h3>
+            <input type="text" id="sched-title" placeholder="Directive Title" style="width:100%; box-sizing:border-box;">
 
             <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
-                <span title="Дата начала" style="font-family:'Norwester',sans-serif; font-size:11px; color:#00f2ff; letter-spacing:1px;">ОТ</span>
-                <input type="date" id="sched-start" style="flex:1; box-sizing:border-box;">
+                <span title="Дата начала" style="font-family:'Norwester',sans-serif; font-size:11px; color:#00f2ff; letter-spacing:1px;">FROM</span>
+                <input type="date" id="sched-start" lang="en-US" style="flex:1; box-sizing:border-box;">
             </div>
 
             <div style="margin-top:6px; display:flex; align-items:center; gap:8px;">
-                <span title="Время" style="font-family:'Norwester',sans-serif; font-size:11px; color:#00f2ff; letter-spacing:1px;">ЧАСЫ</span>
+                <span title="Время" style="font-family:'Norwester',sans-serif; font-size:11px; color:#00f2ff; letter-spacing:1px;">TIME</span>
                 <input type="time" id="sched-time-from" value="09:00" style="flex:1; box-sizing:border-box;">
                 <span>—</span>
                 <input type="time" id="sched-time-to" value="10:00" style="flex:1; box-sizing:border-box;">
             </div>
 
             <div style="margin-top:6px; display:flex; align-items:center; gap:8px;">
-                <span title="Дата конца" style="font-family:'Norwester',sans-serif; font-size:11px; color:#00f2ff; letter-spacing:1px;">ДО</span>
-                <input type="date" id="sched-end" style="flex:1; box-sizing:border-box;">
+                <span title="Дата конца" style="font-family:'Norwester',sans-serif; font-size:11px; color:#00f2ff; letter-spacing:1px;">TO</span>
+                <input type="date" id="sched-end" lang="en-US" style="flex:1; box-sizing:border-box;">
             </div>
 
             <div style="margin-top:8px;">
-                <label style="display:block; margin-bottom:6px;">Дни недели:</label>
+                <label style="display:block; margin-bottom:6px;">Weekdays:</label>
                 <div class="day-picker">
                     <div class="day-picker-labels">
-                        <span>ПН</span><span>ВТ</span><span>СР</span><span>ЧТ</span><span>ПТ</span><span>СБ</span><span>ВС</span>
+                        <span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span><span>SU</span>
                     </div>
                     <div class="day-picker-checks">
                         <input type="checkbox" class="sched-day-cb" value="1">
@@ -61,30 +61,30 @@
             </div>
 
             <div style="margin-top:8px;">
-                <label><input type="checkbox" id="sched-biweekly"> ЧЕРЕД. НЕДЕЛИ (ЧЕТ/НЕЧЕТ)</label>
+                <label><input type="checkbox" id="sched-biweekly"> BI-WEEKLY CYCLE </label>
             </div>
 
             <div style="margin-top:8px;">
                 <select id="sched-repeat" style="width:100%; box-sizing:border-box;">
-                    <option value="none">БЕЗ ПОВТОРА</option>
-                    <option value="daily">ЕЖЕДНЕВНО</option>
-                    <option value="monthly">ЕЖЕМЕСЯЧНО</option>
-                    <option value="yearly">ЕЖЕГОДНО</option>
+                    <option value="none">NO REPEAT</option>
+                    <option value="daily">DAILY</option>
+                    <option value="monthly">MONTHLY</option>
+                    <option value="yearly">YEARLY</option>
                 </select>
             </div>
 
             <button class="cyan-button" style="margin-top:12px; width:100%;" onclick="handleCreateSchedule()">
-                ИНИЦИИРОВАТЬ ЦИКЛ
+                INITIATE CYCLE
             </button>
         </div>
     </div>
 
     <div id="right-panel">
         <div id="task-filters">
-            <button onclick="loadTasks()" class="cyan-button">ВСЕ</button>
-            <button onclick="showToday()" class="alert-btn">СЕГОДНЯ</button>
-            <button onclick="showTomorrow()" class="warn-btn">ЗАВТРА</button>
-            <input type="date" id="filter-date" onchange="filterByDate(this.value)">
+            <button onclick="loadTasks()" class="cyan-button">ALL</button>
+            <button onclick="showToday()" class="alert-btn">TODAY</button>
+            <button onclick="showTomorrow()" class="warn-btn">TOMORROW</button>
+            <input type="date" id="filter-date" lang="en-US" onchange="filterByDate(this.value)">
         </div>
         <div id="task-list"></div>
     </div>
@@ -99,22 +99,22 @@
 
     <div id="tutorial-overlay" style="display:none;">
         <div class="tutorial-card">
-            <h2 style="color: #f2a300;">ПРОТОКОЛ ОБУЧЕНИЯ: УПРАВЛЯЮЩИЙ</h2>
-            <p>Добро пожаловать в систему мониторинга. Здесь вы будете назначать задачи отделам.</p>
+            <h2 style="color: #f2a300;">TUTORIAL PROTOCOL: MANAGER</h2>
+            <p>Welcome to the monitoring system. You are here to assign directives to the departments.</p>
             <ul>
-                <li>Календарь отображает плотность аномалий (задач).</li>
-                <li>Форма слева позволяет создавать новые директивы.</li>
-                <li>Анжела будет уведомлять вас о критических изменениях.</li>
+                <li>The calendar displays the density of abnormalities (tasks).</li>
+                <li>The left console is for creating new directives.</li>
+                <li>I will notify you of any critical changes in the facility.</li>
             </ul>
-            <button class="cyan-button" onclick="closeTutorial()">НАЧАТЬ РАБОТУ</button>
+            <button class="cyan-button" onclick="closeTutorial()">BEGIN WORK</button>
         </div>
     </div>
 
     <div id="day-modal" class="modal" style="display:none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-date-title">ОТЧЕТ ЗА ДЕНЬ</h2>
-                <button onclick="closeModal()">ЗАКРЫТЬ</button>
+                <h2 id="modal-date-title">DAILY REPORT</h2>
+                <button onclick="closeModal()">CLOSE</button>
             </div>
             <div id="modal-task-list"></div>
         </div>
@@ -123,15 +123,15 @@
     <div id="edit-modal" class="modal" style="display:none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>РЕДАКТИРОВАНИЕ ДИРЕКТИВЫ</h2>
+                <h2>EDIT DIRECTIVE</h2>
                 <button onclick="closeEditModal()">✖</button>
             </div>
             <input type="hidden" id="edit-id">
             <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
                 <input type="text" id="edit-title" placeholder="Название" style="width:100%; box-sizing:border-box;">
-                <input type="date" id="edit-date" style="width:100%; box-sizing:border-box;">
+                <input type="date" id="edit-date" lang="en-US" style="width:100%; box-sizing:border-box;">
                 <input type="time" id="edit-time" style="width:100%; box-sizing:border-box;">
-                <button class="cyan-button" onclick="handleSaveEdit()">СОХРАНИТЬ</button>
+                <button class="cyan-button" onclick="handleSaveEdit()">SAVE</button>
             </div>
         </div>
     </div>
@@ -145,25 +145,25 @@
     <div id="settings-modal" class="modal" style="display:none;">
         <div class="modal-content" style="width:480px;">
             <div class="modal-header">
-                <h2>⚙ НАСТРОЙКИ СИСТЕМЫ</h2>
+                <h2>⚙ SYSTEM SETTINGS</h2>
                 <button onclick="closeSettings()">✖</button>
             </div>
             <div style="display:flex; gap:0; margin-bottom:15px;">
-                <button id="tab-sound-btn" class="tab-btn tab-active" onclick="switchTab('sound')">ЗВУК</button>
-                <button id="tab-remind-btn" class="tab-btn" onclick="switchTab('remind')">НАПОМИНАНИЯ</button>
+                <button id="tab-sound-btn" class="tab-btn tab-active" onclick="switchTab('sound')">AUDIO</button>
+                <button id="tab-remind-btn" class="tab-btn" onclick="switchTab('remind')">ALERTS</button>
             </div>
             <div id="tab-sound" class="tab-content">
-                <div class="vol-row"><label>Фоновая музыка</label><input type="range" min="0" max="1" step="0.05" id="vol-bg" oninput="applyVolumes()"></div>
-                <div class="vol-row"><label>Напоминание 1</label><input type="range" min="0" max="1" step="0.05" id="vol-r1" oninput="applyVolumes()"></div>
-                <div class="vol-row"><label>Напоминание 2</label><input type="range" min="0" max="1" step="0.05" id="vol-r2" oninput="applyVolumes()"></div>
-                <div class="vol-row"><label>Напоминание 3</label><input type="range" min="0" max="1" step="0.05" id="vol-r3" oninput="applyVolumes()"></div>
+                <div class="vol-row"><label>BGM Volume</label><input type="range" min="0" max="1" step="0.05" id="vol-bg" oninput="applyVolumes()"></div>
+                <div class="vol-row"><label>Alert 1</label><input type="range" min="0" max="1" step="0.05" id="vol-r1" oninput="applyVolumes()"></div>
+                <div class="vol-row"><label>Alert 2</label><input type="range" min="0" max="1" step="0.05" id="vol-r2" oninput="applyVolumes()"></div>
+                <div class="vol-row"><label>Alert 3</label><input type="range" min="0" max="1" step="0.05" id="vol-r3" oninput="applyVolumes()"></div>
             </div>
             <div id="tab-remind" class="tab-content" style="display:none;">
-                <p style="color:#888; font-size:12px; margin-bottom:10px;">Укажите за сколько минут до задачи играть каждое напоминание (0 = отключено)</p>
-                <div class="vol-row"><label>Напоминание 1 (мин)</label><input type="number" min="0" max="1440" id="rem-1" style="width:80px;"></div>
-                <div class="vol-row"><label>Напоминание 2 (мин)</label><input type="number" min="0" max="1440" id="rem-2" style="width:80px;"></div>
-                <div class="vol-row"><label>Напоминание 3 (мин)</label><input type="number" min="0" max="1440" id="rem-3" style="width:80px;"></div>
-                <button class="cyan-button" style="margin-top:15px;" onclick="saveReminderSettings()">СОХРАНИТЬ</button>
+                <p style="color:#888; font-size:12px; margin-bottom:10px;">Set the lead time (minutes) for each alert sequence. (0 = none)</p>
+                <div class="vol-row"><label>Alert 1 (min)</label><input type="number" min="0" max="1440" id="rem-1" style="width:80px;"></div>
+                <div class="vol-row"><label>Alert 2 (min)</label><input type="number" min="0" max="1440" id="rem-2" style="width:80px;"></div>
+                <div class="vol-row"><label>Alert 3 (min)</label><input type="number" min="0" max="1440" id="rem-3" style="width:80px;"></div>
+                <button class="cyan-button" style="margin-top:15px;" onclick="saveReminderSettings()">SAVE</button>
             </div>
         </div>
     </div>

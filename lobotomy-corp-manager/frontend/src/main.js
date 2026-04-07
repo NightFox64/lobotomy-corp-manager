@@ -4,7 +4,7 @@ import { EventsOn, WindowShow } from '../wailsjs/runtime/runtime';
 
 let allTasks = [];
 let currentViewDate = new Date();
-let currentFilter = null; // 'date:YYYY-MM-DD' | 'today' | 'tomorrow' | null
+let currentFilter = null;
 
 const bgMusic = new Audio('./src/assets/0warning.mp3');
 bgMusic.loop = true;
@@ -48,7 +48,7 @@ window.saveReminderSettings = async function() {
     const r2 = parseInt(document.getElementById('rem-2').value) || 0;
     const r3 = parseInt(document.getElementById('rem-3').value) || 0;
     await SetReminderSettings(r1, r2, r3);
-    speak('Настройки напоминаний сохранены.');
+    speak('Reminder settings synchronized.');
     closeSettings();
 }
 
@@ -91,7 +91,7 @@ function updateRepeatAvailability() {
 }
 
 async function init() {
-    console.log("Система: Инициализация...");
+    console.log("System: Initializing...");
     try {
         applyVolumesFromSettings();
         bgMusic.play().catch(() => {});
@@ -100,7 +100,7 @@ async function init() {
         if (needsTutorial) {
             document.getElementById('tutorial-overlay').style.display = 'flex';
         }
-        speak("Система Lobotomy Corp активна. Ожидаю указаний.");
+        speak("Lobotomy Corp system active. Awaiting your orders, Manager.");
     } catch (err) {
         console.error("Сбой инициализации:", err);
     }
@@ -171,7 +171,7 @@ window.handleToggle = async function(id) {
     const task = allTasks.find(t => t.id === id);
     if (task && task.is_done) {
         setSprite('good_work');
-        speak('Ваша эффективность растёт, Управляющий. Продолжайте в том же духе.');
+        speak('Your management efficiency is rising. Keep up the good work.');
     }
 }
 
@@ -199,7 +199,7 @@ window.handleSaveEdit = async function() {
     const time = document.getElementById('edit-time').value;
     await UpdateTask(id, title, date, time);
     closeEditModal();
-    speak("Директива обновлена.");
+    speak("Directive updated.");
     refreshTasks();
 }
 
@@ -218,7 +218,7 @@ function renderCalendar() {
     const year = currentViewDate.getFullYear();
     const month = currentViewDate.getMonth();
 
-    const monthNames = ["ЯНВАРЬ", "ФЕВРАЛЬ", "МАРТ", "АПРЕЛЬ", "МАЙ", "ИЮНЬ", "ИЮЛЬ", "АВГУСТ", "СЕНТЯБРЬ", "ОКТЯБРЬ", "НОЯБРЬ", "ДЕКАБРЬ"];
+    const monthNames = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULE", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
     title.innerText = `${monthNames[month]} ${year}`;
 
     const firstDay = new Date(year, month, 1);
@@ -261,7 +261,7 @@ window.handleCreateSchedule = async function() {
     const days = [...document.querySelectorAll('.sched-day-cb:checked')].map(cb => parseInt(cb.value));
 
     if (!title || !start || !end) {
-        speak("Управляющий, данные не полны. Укажите название и даты.");
+        speak("Manager, the data is incomplete. Please specify titles and dates.");
         return;
     }
 
@@ -280,7 +280,7 @@ window.handleCreateSchedule = async function() {
         const match = result.match(/\d+/);
         if (match) totalCount += parseInt(match[0]);
     }
-    speak(`Цикл завершен. Создано ${totalCount} записей. Расписание синхронизировано.`);
+    speak(`Cycle complete. ${totalCount} records generated. Schedule synchronized.`);
 
     loadTasks();
 }
@@ -299,11 +299,11 @@ window.showToday = function() {
     const todayTasks = allTasks.filter(t => t.deadline === todayStr);
     const list = document.getElementById('task-list');
     if (todayTasks.length === 0) {
-        list.innerHTML = '<h1>ДИРЕКТИВ НА СЕГОДНЯ НЕТ</h1>';
-        speak("Управляющий, аномалий на текущий цикл не обнаружено.");
+        list.innerHTML = '<h1>NO DIRECTIVES ASSIGNED FOR TODAY</h1>';
+        speak("Manager, no abnormalities detected for the current cycle.");
     } else {
-        list.innerHTML = `<h1>ДИРЕКТИВЫ НА СЕГОДНЯ</h1>` + todayTasks.map(taskHTML).join('');
-        speak(`На сегодня назначено ${todayTasks.length} задач.`);
+        list.innerHTML = `<h1>TODAY'S DIRECTIVES</h1>` + todayTasks.map(taskHTML).join('');
+        speak(`${todayTasks.length} directives scheduled for today.`);
     }
 }
 
@@ -316,11 +316,11 @@ window.showTomorrow = function() {
     const tomorrowTasks = allTasks.filter(t => t.deadline === tomorrowStr);
     const list = document.getElementById('task-list');
     if (tomorrowTasks.length === 0) {
-        list.innerHTML = '<h1>ПЛАНЫ НА ЗАВТРА ОТСУТСТВУЮТ</h1>';
-        speak("Завтрашний день чист. Рекомендую подготовить отчеты.");
+        list.innerHTML = '<h1>NO PLANS DETECTED FOR TOMORROW</h1>';
+        speak("Tomorrow's schedule is clear. I suggest you prepare your reports.");
     } else {
-        list.innerHTML = `<h1>ПРОТОКОЛ: ЗАВТРА</h1>` + tomorrowTasks.map(taskHTML).join('');
-        speak(`На завтра запланировано ${tomorrowTasks.length} задач.`);
+        list.innerHTML = `<h1>PROTOCOL: TOMORROW</h1>` + tomorrowTasks.map(taskHTML).join('');
+        speak(`${tomorrowTasks.length} directives planned for tomorrow.`);
     }
 }
 
@@ -336,8 +336,8 @@ window.filterByDate = function(dateStr) {
     const label = `${escapeHtml(d)}.${escapeHtml(m)}.${escapeHtml(y)}`;
     const dayTasks = allTasks.filter(t => t.deadline === dateStr);
     const list = document.getElementById('task-list');
-    list.innerHTML = `<h1>ДИРЕКТИВЫ НА ${label}</h1>` + (dayTasks.length ? dayTasks.map(taskHTML).join('') : '<div class="no-tasks">НЕТ ДИРЕКТИВ НА ЭТОТ ДЕНЬ</div>');
-    speak(`На ${label} назначено ${dayTasks.length} задач.`);
+    list.innerHTML = `<h1>DIRECTIVES FOR ${label}</h1>` + (dayTasks.length ? dayTasks.map(taskHTML).join('') : '<div class="no-tasks">NO DIRECTIVES FOR THIS LOG</div>');
+    speak(`${dayTasks.length} directives assigned to ${label}.`);
 }
 
 window.closeModal = () => document.getElementById('day-modal').style.display = 'none';
@@ -377,14 +377,14 @@ function checkSpriteState() {
     const overdueExists = allTasks.some(t => !t.is_done && t.deadline <= yesterdayStr);
     if (overdueExists) {
         setSprite('yesterday', null);
-        speak('Вы допускаете нарушения регламента. Это недопустимо.');
+        speak('You are violating the management regulations. This is unacceptable.');
         return;
     }
 
     const todayPending = allTasks.filter(t => !t.is_done && t.deadline === todayStr).length;
     if (todayPending >= 5) {
         setSprite('too_many', null);
-        speak('Плотность задач превышает норму. Рекомендую сосредоточиться.');
+        speak('Task density exceeds normal parameters. I suggest you focus.');
         return;
     }
 
@@ -400,7 +400,7 @@ window.speak = function(text) {
 window.closeTutorial = async function() {
     await FinishTutorial();
     document.getElementById('tutorial-overlay').style.display = 'none';
-    speak("Инструктаж завершен. Удачной работы.");
+    speak("Briefing complete. Have a pleasant work shift.");
 }
 
 let activeReminderSound = null;
@@ -440,14 +440,14 @@ function updateStopBtn() {
 EventsOn('alarm-trigger', (task) => {
     playReminderSound(reminderSounds[2]);
     WindowShow();
-    speak(`ВНИМАНИЕ! Наступило время выполнения директивы: ${task.title}. Немедленно приступите к работе.`);
+    speak(`WARNING! It is time for directive: ${task.title}. Commencing work immediately.`);
     triggerEmergencyEffect();
 });
 
 EventsOn('reminder-trigger', (data) => {
     const snd = reminderSounds[data.index];
     if (snd) playReminderSound(snd);
-    speak(`ПРЕДУПРЕЖДЕНИЕ: через ${data.minutes} мин. начнётся выполнение директивы: ${data.title}.`);
+    speak(`ALERT: Directive ${data.title} will commence in ${data.minutes} minutes.`);
 });
 
 function triggerEmergencyEffect() {
