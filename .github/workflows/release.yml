@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch: 
 
 jobs:
   build:
@@ -24,18 +25,18 @@ jobs:
         working-directory: ./lobotomy-corp-manager 
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4 
 
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5 
         with:
-          go-version: '1.21'
-          cache-dependency-path: ./lobotomy-corp-manager/go.sum 
+          go-version: '1.22'
+          cache-dependency-path: ./lobotomy-corp-manager/go.sum
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 
         with:
-          node-version: 18
+          node-version: 20
           cache-dependency-path: ./lobotomy-corp-manager/frontend/package-lock.json
 
       - name: Install Wails
@@ -51,7 +52,7 @@ jobs:
         run: wails build -platform ${{ matrix.platform }} -clean
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 
         with:
           name: ${{ matrix.os }}-bin
           path: lobotomy-corp-manager/build/bin/*
@@ -59,12 +60,14 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             **/*.exe
