@@ -159,7 +159,7 @@ function renderTaskList(tasks) {
     const list = document.getElementById('task-list');
     if (!list) return;
     if (!tasks || tasks.length === 0) {
-        list.innerHTML = '<div class="no-tasks">НЕТ АКТИВНЫХ ДИРЕКТИВ</div>';
+        list.innerHTML = '<div class="no-tasks"><h1>NO DIRECTIVES ASSIGNED AT ALL</h1></div>';
         return;
     }
     list.innerHTML = tasks.map(taskHTML).join('');

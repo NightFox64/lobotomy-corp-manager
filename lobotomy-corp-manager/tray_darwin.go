@@ -9,9 +9,9 @@ import (
 
 func runTray(app *App, icon []byte) {
 	systray.Run(func() {
-		show := systray.AddMenuItem("Развернуть систему", "")
+		show := systray.AddMenuItem("Open the system", "")
 		systray.AddSeparator()
-		quit := systray.AddMenuItem("Завершить протокол", "")
+		quit := systray.AddMenuItem("End the protocol", "")
 
 		go func() {
 			for {
