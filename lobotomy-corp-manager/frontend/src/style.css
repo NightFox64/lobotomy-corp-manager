@@ -411,9 +411,9 @@ body::after {
     background: transparent;
     border: 1px solid #00f2ff;
     color: #00f2ff;
-    font-size: 20px;
-    width: 38px;
-    height: 38px;
+    font-size: 26px;
+    width: 44px;
+    height: 44px;
     cursor: pointer;
     line-height: 1;
 }
@@ -424,15 +424,15 @@ body::after {
 
 #tutorial-btn {
     position: fixed;
-    top: 10px;
-    right: 54px;
+    top: 64px;
+    right: 10px;
     z-index: 3000;
     background: transparent;
     border: 1px solid #00f2ff;
     color: #00f2ff;
-    font-size: 16px;
-    width: 38px;
-    height: 38px;
+    font-size: 22px;
+    width: 44px;
+    height: 44px;
     cursor: pointer;
     line-height: 1;
 }
@@ -527,15 +527,15 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus {
 
 #stop-alarm-btn {
     position: fixed;
-    top: 10px;
-    right: 98px;
+    top: 118px;
+    right: 10px;
     z-index: 3000;
     background: transparent;
     border: 1px solid #ff4444;
     color: #ff4444;
-    font-size: 18px;
-    width: 38px;
-    height: 38px;
+    font-size: 24px;
+    width: 44px;
+    height: 44px;
     cursor: pointer;
     line-height: 1;
     animation: pulse-red 1s infinite;
