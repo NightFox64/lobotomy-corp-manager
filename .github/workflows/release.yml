@@ -85,9 +85,10 @@ jobs:
         with:
           name: bin-${{ matrix.artifact_name }}
           path: |
-            lobotomy-corp-manager/build/bin/*-installer.exe
+            lobotomy-corp-manager/build/bin/*.exe
             lobotomy-corp-manager/build/bin/lobotomy-corp-manager
             lobotomy-corp-manager/*.dmg
+          if-no-files-found: error
 
   release:
     needs: build
