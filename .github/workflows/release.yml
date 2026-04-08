@@ -61,7 +61,7 @@ jobs:
 
       - name: Build Wails App (Windows)
         if: runner.os == 'Windows'
-        run: wails build -platform windows/amd64 -debug -clean
+        run: wails build -platform windows/amd64 -clean
 
       - name: Build Wails App (Linux/macOS)
         if: runner.os != 'Windows'

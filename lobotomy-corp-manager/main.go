@@ -9,9 +9,10 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
+//go:embed all:frontend/dist
 var assets embed.FS
 
-//go:embed  icon.ico
+//go:embed build/windows/icon.ico
 var trayIcon []byte
 
 func main() {
