@@ -65,7 +65,7 @@ jobs:
 
       - name: Build Wails App (Linux/macOS)
         if: runner.os != 'Windows'
-        run: wails build -platform ${{ matrix.platform }} -clean
+        run: wails build -platform ${{ matrix.platform }} -tags webkit2gtk_4_1 -clean
 
       - name: Create macOS DMG
         if: runner.os == 'macOS'
