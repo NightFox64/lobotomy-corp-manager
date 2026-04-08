@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     strategy:
-      fail-fast: false
+      fail-fast: false 
       matrix:
         include:
           - os: windows-latest
@@ -17,7 +17,9 @@ jobs:
           - os: ubuntu-22.04
             platform: linux/amd64
           - os: macos-latest
-            platform: darwin/universal
+            platform: darwin/amd64
+          - os: macos-latest
+            platform: darwin/arm64
 
     runs-on: ${{ matrix.os }}
     
@@ -47,7 +49,6 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          # Используем расширенный список зависимостей для сборки
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev build-essential pkg-config
 
       - name: Build Wails App
@@ -56,24 +57,27 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-bin
+          name: bin-${{ matrix.platform | replace('/', '-') }}
           path: lobotomy-corp-manager/build/bin/*
 
   release:
     needs: build
     runs-on: ubuntu-latest
+    if: always() && contains(needs.build.result, 'success')
     permissions:
       contents: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            **/*.exe
-            **/*.app
-            **/lobotomy-corp-manager
+            artifacts/**/*.exe
+            artifacts/**/*.app
+            artifacts/**/lobotomy-corp-manager
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
