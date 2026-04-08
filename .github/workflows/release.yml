@@ -18,10 +18,10 @@ jobs:
           - os: ubuntu-22.04
             platform: linux/amd64
             artifact_name: linux-amd64
-          - os: macos-latest # Используем универсальный лейбл
+          - os: macos-latest
             platform: darwin/amd64
             artifact_name: macos-intel
-          - os: macos-latest # Используем универсальный лейбл
+          - os: macos-latest
             platform: darwin/arm64
             artifact_name: macos-arm64
 
@@ -59,17 +59,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev build-essential pkg-config
 
-      # Сборка для Windows с установщиком
       - name: Build Wails App (Windows)
         if: runner.os == 'Windows'
-        run: wails build -platform ${{ matrix.platform }} -nsis -clean
+        run: wails build -platform windows/amd64 -debug -clean
 
-      # Сборка для Linux и macOS
       - name: Build Wails App (Linux/macOS)
         if: runner.os != 'Windows'
         run: wails build -platform ${{ matrix.platform }} -clean
 
-      # Создание DMG (только на macOS ранерах)
       - name: Create macOS DMG
         if: runner.os == 'macOS'
         shell: bash
