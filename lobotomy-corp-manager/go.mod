@@ -4,8 +4,8 @@ go 1.25.0
 
 require (
 	fyne.io/systray v1.12.0
-	github.com/allan-simon/go-singleinstance v0.0.0-20210120080615-d0997106ab37
 	github.com/glebarez/sqlite v1.11.0
+	github.com/marcsauter/single v0.0.0-20201009143647-9f8d81240be2
 	github.com/wailsapp/wails/v2 v2.12.0
 	golang.org/x/sys v0.42.0
 	gorm.io/gorm v1.31.1
