@@ -6,13 +6,13 @@ let allTasks = [];
 let currentViewDate = new Date();
 let currentFilter = null;
 
-const bgMusic = new Audio('./src/assets/0warning.mp3');
+const bgMusic = new Audio('./music/0warning.mp3');
 bgMusic.loop = true;
 const reminderSounds = [
     null,
-    new Audio('./src/assets/1warning.mp3'),
-    new Audio('./src/assets/2warning.mp3'),
-    new Audio('./src/assets/3warning.mp3'),
+    new Audio('./music/1warning.mp3'),
+    new Audio('./music/2warning.mp3'),
+    new Audio('./music/3warning.mp3'),
 ];
 
 function loadSettings() {
@@ -350,10 +350,10 @@ window.showView = function(viewId) {
 }
 
 const sprites = {
-    calm:       './src/assets/images/Angela_Sprite_calm.png',
-    good_work:  './src/assets/images/Angela_Sprite_good_work.png',
-    too_many:   './src/assets/images/Angela_Sprite_too_many_tasks.png',
-    yesterday:  './src/assets/images/Angela_Sprite_yesterday_tasks_exist.png',
+    calm:       './images/Angela_Sprite_calm.png',
+    good_work:  './images/Angela_Sprite_good_work.png',
+    too_many:   './images/Angela_Sprite_too_many_tasks.png',
+    yesterday:  './images/Angela_Sprite_yesterday_tasks_exist.png',
 };
 
 let spriteResetTimer = null;

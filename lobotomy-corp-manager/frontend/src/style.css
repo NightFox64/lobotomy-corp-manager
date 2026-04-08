@@ -16,7 +16,7 @@
 body {
     background-color: #050a0a;
     padding: 0;
-    background-image: linear-gradient(rgba(5, 10, 10, 0.85), rgba(5, 10, 10, 0.85)), url('./assets/images/AngelaBackground-resources.assets-4709.png');
+    background-image: linear-gradient(rgba(5, 10, 10, 0.85), rgba(5, 10, 10, 0.85)), url('./images/AngelaBackground-resources.assets-4709.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

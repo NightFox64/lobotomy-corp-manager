@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	"embed"
+	"os"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+
+	"github.com/allan-simon/go-singleinstance"
 )
 
 //go:embed all:frontend/dist
@@ -16,10 +19,15 @@ var assets embed.FS
 var trayIcon []byte
 
 func main() {
+	_, err := singleinstance.CreateLockFile("lobotomy-corp-manager.lock")
+	if err != nil {
+		os.Exit(0)
+	}
+
 	app := NewApp()
 	po := platformOptions()
 
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:             "Lobotomy Calendar",
 		Width:             1024,
 		Height:            768,
